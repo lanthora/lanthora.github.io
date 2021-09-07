@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>操作系统 on LANTHORA</title>
+    <link>https://lanthora.github.io/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/</link>
+    <description>Recent content in 操作系统 on LANTHORA</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>CC BY 4.0</copyright>
+    <lastBuildDate>Tue, 20 Sep 2022 22:03:16 +0800</lastBuildDate>
+    <atom:link href="https://lanthora.github.io/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>主机入侵检测与防御系统</title>
+      <link>https://lanthora.github.io/posts/hackernel-host-intrusion-detection-and-prevention-system/</link>
+      <pubDate>Tue, 20 Sep 2022 22:03:16 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/hackernel-host-intrusion-detection-and-prevention-system/</guid>
+      <description>引言 这篇文章介绍一款开源的的主机入侵检测与防御系统.&#xA;开源社区有类似的产品,实现方案也大体一致,他们共通的特点是过于庞大,对于我这样一个对 k8s,服务部署都不太了解的人来说,使用起来过于困难.&#xA;如果你想尝试类似的产品,同时又喜欢简单轻量的部署方式,又或者你的生产环境资源有限,导致不适合部署复杂应用,这款产品可能可以满足你的需求.&#xA;初衷 我的初衷是学习内核相关的技术,操作系统的安全产品是一个很好的切入点,它的下限很低同时上限很高.做出一款这样的产品可以检验我的学习成果,同时还能做出对社区有些用的东西.&#xA;名称的由来 在最初的提交中就确定项目名为 hackernel, 这是 hack 和 kernel 的组合拼写.在维基百科中对 hack 这个行为的解释有这样的描述,&amp;ldquo;问题的解决方案是不效率甚至难以理解的,但是以某种方式起作用&amp;rdquo;.&#xA;这个项目实现过程中采用一些非常规的手段对内核数据进行修改.因此 hackernel 是个契合项目的特点的名称.&#xA;核心功能实现原理 这个项目由内核模块提供核心功能,上层应用可以组合核心功能以达到不同的效果.原理上:&#xA;通过修改系统调用表,将系统调用修改为自定义的 hook 函数,根据入参决定是否调用真实的系统调用; 使用内核提供的 hook 函数, 如网络相关的 netfilter hook 点. hook 函数有能力决定是否向下层调用.允许向下调用并记录行为为检测,禁止向下调用为防御.我们通过策略来定义某个内核事件发生时的处理行为.&#xA;如果你对这部分感兴趣,可以看内核模块实现&#xA;多层封装降低使用难度 内核模块只能一条条的执行策略,而不能给自己下发策略.下发策略是上层的行为,为了降低使用难度,将上层分成了多个层次,越往上越接近最终用户,使用难度也就越低.&#xA;netlink 接口封装成函数 在这一层,我们把内核模块提供的功能封装成了 C/C++ 函数,这套封装与内核的距离最近,灵活性最强.&#xA;如果你对这部分感兴趣,可以看进程操作的封装,相同目录结构下还有文件和网络.&#xA;函数封装成 unix domain socket 服务 上一层封装与内核直接通信,在内部实现功能存在潜在风险,用 C/C++ 开发难度相对较大.因此在函数的基础上封装出服务,仅在进程内保留最核心的功能并提供 API 调用接口,其他功能在外部.这样做即隔离了进程,又允许用其他语言开发功能.&#xA;我们开发了一套事件处理机制,利用这套机制实现了纯异步的请求处理和事件通知.到此为止,所有由 C/C++ 开发的部分结束了.&#xA;如果你对这部分感兴趣,可以看封装 unix domain socket&#xA;unix domain socket 接口封装 Go 应用 经过反复考量,我们决定用 Go 实现用户直接使用的大多数需求.它有很多成熟的库,可以显著提高开发效率.我们实现了三个应用作为给最终用户使用的产品.&#xA;三个应用 测试程序 展示库的使用方法, 验证底层模块是否正常工作.</description>
+    </item>
+    <item>
+      <title>关闭内核内存写保护</title>
+      <link>https://lanthora.github.io/posts/disable-kernel-memory-write-protection/</link>
+      <pubDate>Sun, 17 Oct 2021 10:12:10 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/disable-kernel-memory-write-protection/</guid>
+      <description>内存写保护 某块内存的读写执行权限实际上由其页表项(PTE)标记.修改页表项内容可以更改其权限.&#xA;TODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查找到 PTE 并修改权限,用户态再给只读变量赋值.后面找到了再补上链接吧&#xA;内核中的内存实际上与用户态的内存没有本质上的区别,都可以通过修改页表项改变其权限.&#xA;内核设置只读数据段为只读 内核初始化函数 init/main.c/start_kernel 中.有这样的一层调用关系: start_kernel &amp;gt; arch_call_rest_init &amp;gt; rest_init &amp;gt; kernel_init &amp;gt; mark_readonly &amp;gt; mark_rodata_ro. 其中 mark_rodata_ro 由各个架构分别实现.&#xA;ARM64中内存设置只读权限 以 ARM64 为例,看看写保护是如何生效的.&#xA;在 arch/arm64/mm/mmu.c 中可以找到 mark_rodata_ro .其中 __pa_symbol 对地址进行常数 kimage_voffset 偏移,并且 kimage_voffset 是导出符号.&#xA;void mark_rodata_ro(void) { unsigned long section_size; /* * mark .rodata as read only. Use __init_begin rather than __end_rodata * to cover NOTES and EXCEPTION_TABLE. */ section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata; update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata, section_size, PAGE_KERNEL_RO); debug_checkwx(); } update_mapping_prot 4 个参数分别是:物理地址,虚拟地址,长度,权限.</description>
+    </item>
+    <item>
+      <title>命名空间对 netfilter 的影响</title>
+      <link>https://lanthora.github.io/posts/namespace-netfilter-hook-point/</link>
+      <pubDate>Wed, 29 Sep 2021 21:42:32 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/namespace-netfilter-hook-point/</guid>
+      <description>TL;DR 在 netfilter: Per network namespace netfilter hooks 后,需要指定网络命名空间,当指定的命名空间为 init_net 的时候,与容器内进程的命名空间不一致,导致无法被 hook.&#xA;正确的 hook 方法是使用 for_each_net 宏获取所有 net 后再处理,而不是固定的使用 init_net.&#xA;struct net *net; for_each_net (net) { nf_register_net_hook(net, &amp;amp;reg) } 需求 主机内,只允许 TCP 控制报文(TCP报文仅有头部)向外发送,包含数据的 TCP 报文禁止外发.&#xA;实现 通过 netfilter 对 NF_INET_LOCAL_OUT 进行 hook, 丢弃包含数据的 TCP 报文.&#xA;测试 在虚拟机进行测试.有两条策略:放行 ssh; 阻断 portainer.&#xA;然而配置策略后两个服务都可以正常访问.与没有配置 netfilter 过滤规则效果相同,怀疑是不是从头开始就是错的&#xA;更换环境再测试,发现表现一切正常.不过这次配置阻断的是 hugo server.&#xA;初步认定实现应该是部分正确的,找到两个环境的差异即可.&#xA;再次回到出现异常的环境,通过 tcpdump 抓包发现每次访问 portainer 都会有虚拟机内部之间的一次访问.&#xA;恍然间意识到 portainer 是运行在 docker 中的服务.&#xA;解决 问题逐渐清晰, docker 通过内核命名空间实现资源隔离.</description>
+    </item>
+  </channel>
+</rss>

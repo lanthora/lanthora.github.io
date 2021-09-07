@@ -1,0 +1,33 @@
+baseURL = "https://lanthora.github.io"
+languageCode = "en-us"
+title = "LANTHORA"
+theme = "yinyang"
+DefaultContentLanguage = "en"
+publishDir = 'docs'
+rssLimit = 20
+copyright = "CC BY 4.0"
+
+[params]
+mainSections = ["posts"]
+headTitle = "Hello World"
+
+[[params.socials]]
+name = "Github"
+link = "https://github.com/lanthora"
+
+[[params.socials]]
+name = "Telegram"
+link = "https://t.me/lanthora"
+
+[[params.socials]]
+name = "Matrix"
+link = "https://matrix.to/#/@lanthora:mozilla.org"
+
+[[params.socials]]
+name = "Email"
+link = "mailto:lanthora@outlook.com"
+
+
+postHeaderContent = ""
+postFooterContent = ""
+extraCSSFiles = []

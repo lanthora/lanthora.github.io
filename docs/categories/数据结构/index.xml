@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>数据结构 on LANTHORA</title>
+    <link>https://lanthora.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+    <description>Recent content in 数据结构 on LANTHORA</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>CC BY 4.0</copyright>
+    <lastBuildDate>Mon, 03 Jan 2022 19:06:57 +0800</lastBuildDate>
+    <atom:link href="https://lanthora.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LRU 算法的 C&#43;&#43; 实现</title>
+      <link>https://lanthora.github.io/posts/lru-template-cpp/</link>
+      <pubDate>Mon, 03 Jan 2022 19:06:57 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/lru-template-cpp/</guid>
+      <description>LeetCode版本 如果只是刷 LeetCode 的话,可以看看我以前写的版本.这个能过 LeetCode, 但是实际上存在严重的代码问题,使用了被 move 的元素.&#xA;实用版本 这个版本解决了上面的问题,同时用模板让元素类型可以自定义.&#xA;#include &amp;lt;list&amp;gt; #include &amp;lt;mutex&amp;gt; #include &amp;lt;unordered_map&amp;gt; template &amp;lt;typename Key, typename Value&amp;gt; class LRUCache { typedef std::list&amp;lt;std::pair&amp;lt;Key, Value&amp;gt;&amp;gt; lru_list; typedef std::unordered_map&amp;lt;Key, typename lru_list::iterator&amp;gt; lru_map; private: lru_list lru_list_; lru_map lru_map_; size_t lru_capacity_ = 1; std::mutex lru_lock_; public: int Get(const Key &amp;amp;key, Value &amp;amp;value) { std::lock_guard&amp;lt;std::mutex&amp;gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_.find(key); if (lru_map_it == lru_map_.end()) return -ESRCH; std::pair&amp;lt;Key, Value&amp;gt; lru_element = *(lru_map_it-&amp;gt;second); value = lru_element.</description>
+    </item>
+  </channel>
+</rss>

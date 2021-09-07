@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on LANTHORA</title>
+    <link>https://lanthora.github.io/posts/</link>
+    <description>Recent content in Posts on LANTHORA</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>CC BY 4.0</copyright>
+    <lastBuildDate>Sun, 24 Mar 2024 12:15:43 +0000</lastBuildDate>
+    <atom:link href="https://lanthora.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在 VisionFive 2 上使用 Arch Linux 实现软路由透明代理</title>
+      <link>https://lanthora.github.io/posts/software-router-on-visionfive2-with-archlinux/</link>
+      <pubDate>Sun, 24 Mar 2024 12:15:43 +0000</pubDate>
+      <guid>https://lanthora.github.io/posts/software-router-on-visionfive2-with-archlinux/</guid>
+      <description>为什么要整这么抽象的活 以前用树莓派 4B 做软路由器.有线网口作为 WAN 口,其他设备通过 WiFi 接入.由于树莓派 WiFi 信号比较弱,所以放在了卧室.又由于卧室里没有网线,用了另一个迷你主机的无线接入客厅的无线路由器,然后用迷你主机的有线网口直连树莓派的有线网口.最近给迷你主机换了硬盘以后总是有很大的电流声,考虑到这些设备都用灯光,于是决定把这些设备都放到客厅,并想办法让 WiFi 信号可以覆盖整个房间.&#xA;最初的方案是,让树莓派的 Wan 口接光猫,原本接光猫的无线路由器作为中继.这个方案用了几天感觉还算可以,不过入户的千兆网被树莓派无线网卡的限制成了百兆.&#xA;再后来打算换成常规的有两个有线网口的软路由方案,已经在看买 R2S 还是买 R6S 了.这个时候突然发现 VisionFive2 刚好是双网口.到目前为止 OpenWRT 社区还没有支持 VisionFive 2, 考虑到以前在树莓派上的软路由就是用的 Arch Linux 系统,并且 VisionFive 2 上原本安装的也是 Arch Linux, 所以就有了标题中的想法.&#xA;在 VisionFive 2 上安装 Arch Linux 参考这个帖子完全够用.我在很久以前就安装了系统,并持续滚动更新,可能最新的安装方式已经有差异,相信手上能拿到板子的人都能装好系统.&#xA;软路由 网卡 网卡配置部分参考这篇文章.&#xA;WAN: /etc/systemd/network/end0.network&#xA;[Match] Name=end0 [Network] DHCP=yes DNSSEC=no DNS=8.8.8.8 LAN: /etc/systemd/network/end1.network&#xA;[Match] Name=end1 [Link] Multicast=yes [Network] Address=10.22.33.1/24 MulticastDNS=yes IPMasquerade=both 不要忘了配置服务开机启动&#xA;systemctl status systemd-networkd DNS 用 SmartDNS 实现国内外域名分别查询不同的 DNS 服务器.</description>
+    </item>
+    <item>
+      <title>介绍一款新的虚拟专用网络工具</title>
+      <link>https://lanthora.github.io/posts/introducing-a-new-virtual-private-network-tool/</link>
+      <pubDate>Tue, 16 May 2023 20:36:11 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/introducing-a-new-virtual-private-network-tool/</guid>
+      <description>什么是虚拟专用网络 互联网上存在大量命名为 VPN (虚拟专用网络)的代理工具,严格意义上来说这些工具应该被称为 Proxy (代理). 这里需要澄清一下它们的区别: VPN 可以让虚拟网络中的设备相互访问; Proxy 则是把一台设备作为跳板访问另一台设备.&#xA;典型的 VPN 有 OpenVPN 和 IPSec, 以及最近几年出现的 WireGuard. 典型的 Proxy 有 Socks5, ShadowSocks, V2Ray. 而 VPN 添加路由和转发配置后,可以实现 Proxy 的效果.这大概就是两个概念混淆的原因吧.&#xA;显然这篇文章介绍的是一款组网工具,而非翻墙工具.&#xA;为什么再实现一款虚拟专用网络工具 上面已经提到许多经典的 VPN, 它们能满足用户的绝大多数场景. 我曾是 WireGuard 用户,但在国内众所周知的网络环境下,它们的设计存在明显的“缺陷”,即明显的协议特征. 这原本不是 VPN 需要考虑的问题,但当流量通过防火墙时,存在被丢包的风险. 我就是在 WireGuard 被丢包后才决定实现一款不容易被防火墙探测的 VPN.&#xA;在此之前,还尝试过我认为很复杂扭曲的方案: 使用可靠的代理转发流量,并在代理之上组网.&#xA;整体设计思路 设计的宗旨是简洁.在不牺牲性能和核心功能的情况下,用最少的代码量和最简单的概念完成设计.&#xA;降低配置复杂度 WireGuard 在 VPN 里配置已经相对较简单了,但对我来说依旧过于复杂.回忆一下你用多长时间完成的第一次 WireGuard 组网. WireGuard 需要强制指定虚拟地址,不适用于想要灵活接入多个客户端并动态分配地址的场景.&#xA;用 WSS(Web Socket Secure) 处理通信,在保证链路数据安全的情况下,免去了配置公私钥的过程. 用口令校验客户端,可以轻松的让新客户端加入网络,这样就能由服务端实现地址动态分配.&#xA;高效的断线重连 在某些情况下 WireGuard 会断线,只有重启客户端才能解决.此时对于一个无人值守的设备,就意味着彻底失联. 曾经为了解决这个问题,给设备配置每天重启一次,这显然是一种很丑陋的解决方案.&#xA;使用 WSS 通信,就可以用 Ping/Pong 完成 TCP 保活,即使 TCP 连接异常断开,应用也可以及时发现,迅速处理.</description>
+    </item>
+    <item>
+      <title>主机入侵检测与防御系统</title>
+      <link>https://lanthora.github.io/posts/hackernel-host-intrusion-detection-and-prevention-system/</link>
+      <pubDate>Tue, 20 Sep 2022 22:03:16 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/hackernel-host-intrusion-detection-and-prevention-system/</guid>
+      <description>引言 这篇文章介绍一款开源的的主机入侵检测与防御系统.&#xA;开源社区有类似的产品,实现方案也大体一致,他们共通的特点是过于庞大,对于我这样一个对 k8s,服务部署都不太了解的人来说,使用起来过于困难.&#xA;如果你想尝试类似的产品,同时又喜欢简单轻量的部署方式,又或者你的生产环境资源有限,导致不适合部署复杂应用,这款产品可能可以满足你的需求.&#xA;初衷 我的初衷是学习内核相关的技术,操作系统的安全产品是一个很好的切入点,它的下限很低同时上限很高.做出一款这样的产品可以检验我的学习成果,同时还能做出对社区有些用的东西.&#xA;名称的由来 在最初的提交中就确定项目名为 hackernel, 这是 hack 和 kernel 的组合拼写.在维基百科中对 hack 这个行为的解释有这样的描述,&amp;ldquo;问题的解决方案是不效率甚至难以理解的,但是以某种方式起作用&amp;rdquo;.&#xA;这个项目实现过程中采用一些非常规的手段对内核数据进行修改.因此 hackernel 是个契合项目的特点的名称.&#xA;核心功能实现原理 这个项目由内核模块提供核心功能,上层应用可以组合核心功能以达到不同的效果.原理上:&#xA;通过修改系统调用表,将系统调用修改为自定义的 hook 函数,根据入参决定是否调用真实的系统调用; 使用内核提供的 hook 函数, 如网络相关的 netfilter hook 点. hook 函数有能力决定是否向下层调用.允许向下调用并记录行为为检测,禁止向下调用为防御.我们通过策略来定义某个内核事件发生时的处理行为.&#xA;如果你对这部分感兴趣,可以看内核模块实现&#xA;多层封装降低使用难度 内核模块只能一条条的执行策略,而不能给自己下发策略.下发策略是上层的行为,为了降低使用难度,将上层分成了多个层次,越往上越接近最终用户,使用难度也就越低.&#xA;netlink 接口封装成函数 在这一层,我们把内核模块提供的功能封装成了 C/C++ 函数,这套封装与内核的距离最近,灵活性最强.&#xA;如果你对这部分感兴趣,可以看进程操作的封装,相同目录结构下还有文件和网络.&#xA;函数封装成 unix domain socket 服务 上一层封装与内核直接通信,在内部实现功能存在潜在风险,用 C/C++ 开发难度相对较大.因此在函数的基础上封装出服务,仅在进程内保留最核心的功能并提供 API 调用接口,其他功能在外部.这样做即隔离了进程,又允许用其他语言开发功能.&#xA;我们开发了一套事件处理机制,利用这套机制实现了纯异步的请求处理和事件通知.到此为止,所有由 C/C++ 开发的部分结束了.&#xA;如果你对这部分感兴趣,可以看封装 unix domain socket&#xA;unix domain socket 接口封装 Go 应用 经过反复考量,我们决定用 Go 实现用户直接使用的大多数需求.它有很多成熟的库,可以显著提高开发效率.我们实现了三个应用作为给最终用户使用的产品.&#xA;三个应用 测试程序 展示库的使用方法, 验证底层模块是否正常工作.</description>
+    </item>
+    <item>
+      <title>我的行为准则</title>
+      <link>https://lanthora.github.io/posts/code-of-conduct/</link>
+      <pubDate>Mon, 28 Feb 2022 15:06:59 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/code-of-conduct/</guid>
+      <description>前言 尝试梳理自己的世界观,并固定与之对应的方法论,进而形成行为准则.&#xA;为了防止在某些场景下由于情绪等外部因素导致行为反复无常.同时也方便他人摸清我的底线.以文本的形式输出我的行为准则.&#xA;暴力是解决冲突的最终方法 在国际交往中,实力永远是维护正义的基础,国防才是外交真正的后盾.尊严只在剑锋之上,真理只在大炮射程之内.&#xA;引用艾公的名言作为开篇,让读者对这部分要表达的内容有个初步了解.&#xA;然后,我们把格局缩小一些.把&amp;quot;国际交往&amp;quot;替换为&amp;quot;个人生活&amp;quot;,那么暴力将成为维护正义的基础,暴力也是法律的真正后盾.这里需要强调暴力并不是维护正义的唯一手段,现实生活中也有与&amp;quot;外交&amp;quot;相似的相对温和的解决争端的方法,那就是法律.&#xA;人民群众愿意主动放弃使用暴力的权力,是以法律的坚决有效执行为前提的.法律在维护的公平正义时,所采取的强制措施一般情况下弱于暴力所采取的措施.当法律失效时,暴力一定会重新成为主流的维护公平正义的方法,例如东莞 2023 年 2 月 13 日发生的杀人事件(搜索关键词:东莞 3600 3人),虽然目前事件没有完全结束,但至少可以确定这是一场由劳资纠纷引发的事件.&#xA;这个事件可能会引发一些好的副作用.对于劳动者,当他努力工作却无法维持生计的时候,会意识到让他陷入这种窘境的直接原因是老板,那么就会出现效仿者.对于资本家,当他在想用各种手段欺压员工的时候,需要考虑愿不愿意冒险搭上自己这条命.个人有一个极端变态的想法,劳动法不再限制资本家必须做什么,而是建议资本家应该做什么,当被员工迫害时,如果没有遵循建议,那么将不对施暴者进行惩罚.让劳动法成为保护资本家不被迫害的工具,可能更能维护劳动者的权益.如今的劳动法如同废纸,在我看来是因为资本家流的血太少而劳动者流的血太多.&#xA;上面的讨论的是以个人为单位的,事实上这个单位可以是家庭,团体,直至阶级.我能做以及此刻我正在做的事,就是尽可能让更多的人多一个看待问题的视角.如果未来某一天,可以在整个无产阶级中达成共识,那么我们每个人都会是受益者.&#xA;最后再引用《共产党宣言》里的话作为总结:&#xA;共产党人不屑于隐瞒自己的观点和意图.他们公开宣布:他们的目的只有用暴力推翻全部现存的社会制度才能达到.让统治阶级在共产主义革命面前发抖吧.无产者在这个革命中失去的只是锁链.他们获得的将是整个世界.&#xA;全世界無產者,聯合起來!&#xA;明确自己的立场,不预设他人的立场 在对某件事情形成态度和观点前,应该先明确自己的立场.如果感觉 &amp;ldquo;人被吊死在了路灯上&amp;rdquo; 是错误的,而 &amp;ldquo;资本家被受压迫的无产阶级吊死在了路灯上&amp;rdquo; 又是可以理解和接受的,那么就可以充分证明不同立场对同一件事的价值判断存在差异.&#xA;当别人做了与自己立场相悖事情时,需要进一步明确对方立场而非直接下结论.&#xA;工作是为了更好的生活 起初工作是为了经济独立,后来还要满足自己的兴趣,再后来又加上了可以平衡工作和生活.&#xA;可量化的指标如下:&#xA;节余 &amp;gt; 消费*(1+距离退休时长*通胀率) 假设在物质极大丰富的共产主义社会,还会从事相同工作(思想实验) 955WLB 辛苦工作却不能的生存,一定是哪里出了问题.努力工作是为了更好的生活,如果工作已经影响到了生活,这份工作就不应该存在,如果工作已经危及到生命,必须立刻停止.已经有太多人工作劳累猝死,要尽可能避免成为其中的一员.&#xA;身体健康是可预期的未来一段时间核心目标,所有有悖于这个目标的事物都要反对.</description>
+    </item>
+    <item>
+      <title>LRU 算法的 C&#43;&#43; 实现</title>
+      <link>https://lanthora.github.io/posts/lru-template-cpp/</link>
+      <pubDate>Mon, 03 Jan 2022 19:06:57 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/lru-template-cpp/</guid>
+      <description>LeetCode版本 如果只是刷 LeetCode 的话,可以看看我以前写的版本.这个能过 LeetCode, 但是实际上存在严重的代码问题,使用了被 move 的元素.&#xA;实用版本 这个版本解决了上面的问题,同时用模板让元素类型可以自定义.&#xA;#include &amp;lt;list&amp;gt; #include &amp;lt;mutex&amp;gt; #include &amp;lt;unordered_map&amp;gt; template &amp;lt;typename Key, typename Value&amp;gt; class LRUCache { typedef std::list&amp;lt;std::pair&amp;lt;Key, Value&amp;gt;&amp;gt; lru_list; typedef std::unordered_map&amp;lt;Key, typename lru_list::iterator&amp;gt; lru_map; private: lru_list lru_list_; lru_map lru_map_; size_t lru_capacity_ = 1; std::mutex lru_lock_; public: int Get(const Key &amp;amp;key, Value &amp;amp;value) { std::lock_guard&amp;lt;std::mutex&amp;gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_.find(key); if (lru_map_it == lru_map_.end()) return -ESRCH; std::pair&amp;lt;Key, Value&amp;gt; lru_element = *(lru_map_it-&amp;gt;second); value = lru_element.</description>
+    </item>
+    <item>
+      <title>关闭内核内存写保护</title>
+      <link>https://lanthora.github.io/posts/disable-kernel-memory-write-protection/</link>
+      <pubDate>Sun, 17 Oct 2021 10:12:10 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/disable-kernel-memory-write-protection/</guid>
+      <description>内存写保护 某块内存的读写执行权限实际上由其页表项(PTE)标记.修改页表项内容可以更改其权限.&#xA;TODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查找到 PTE 并修改权限,用户态再给只读变量赋值.后面找到了再补上链接吧&#xA;内核中的内存实际上与用户态的内存没有本质上的区别,都可以通过修改页表项改变其权限.&#xA;内核设置只读数据段为只读 内核初始化函数 init/main.c/start_kernel 中.有这样的一层调用关系: start_kernel &amp;gt; arch_call_rest_init &amp;gt; rest_init &amp;gt; kernel_init &amp;gt; mark_readonly &amp;gt; mark_rodata_ro. 其中 mark_rodata_ro 由各个架构分别实现.&#xA;ARM64中内存设置只读权限 以 ARM64 为例,看看写保护是如何生效的.&#xA;在 arch/arm64/mm/mmu.c 中可以找到 mark_rodata_ro .其中 __pa_symbol 对地址进行常数 kimage_voffset 偏移,并且 kimage_voffset 是导出符号.&#xA;void mark_rodata_ro(void) { unsigned long section_size; /* * mark .rodata as read only. Use __init_begin rather than __end_rodata * to cover NOTES and EXCEPTION_TABLE. */ section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata; update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata, section_size, PAGE_KERNEL_RO); debug_checkwx(); } update_mapping_prot 4 个参数分别是:物理地址,虚拟地址,长度,权限.</description>
+    </item>
+    <item>
+      <title>命名空间对 netfilter 的影响</title>
+      <link>https://lanthora.github.io/posts/namespace-netfilter-hook-point/</link>
+      <pubDate>Wed, 29 Sep 2021 21:42:32 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/namespace-netfilter-hook-point/</guid>
+      <description>TL;DR 在 netfilter: Per network namespace netfilter hooks 后,需要指定网络命名空间,当指定的命名空间为 init_net 的时候,与容器内进程的命名空间不一致,导致无法被 hook.&#xA;正确的 hook 方法是使用 for_each_net 宏获取所有 net 后再处理,而不是固定的使用 init_net.&#xA;struct net *net; for_each_net (net) { nf_register_net_hook(net, &amp;amp;reg) } 需求 主机内,只允许 TCP 控制报文(TCP报文仅有头部)向外发送,包含数据的 TCP 报文禁止外发.&#xA;实现 通过 netfilter 对 NF_INET_LOCAL_OUT 进行 hook, 丢弃包含数据的 TCP 报文.&#xA;测试 在虚拟机进行测试.有两条策略:放行 ssh; 阻断 portainer.&#xA;然而配置策略后两个服务都可以正常访问.与没有配置 netfilter 过滤规则效果相同,怀疑是不是从头开始就是错的&#xA;更换环境再测试,发现表现一切正常.不过这次配置阻断的是 hugo server.&#xA;初步认定实现应该是部分正确的,找到两个环境的差异即可.&#xA;再次回到出现异常的环境,通过 tcpdump 抓包发现每次访问 portainer 都会有虚拟机内部之间的一次访问.&#xA;恍然间意识到 portainer 是运行在 docker 中的服务.&#xA;解决 问题逐渐清晰, docker 通过内核命名空间实现资源隔离.</description>
+    </item>
+    <item>
+      <title>Hugo 的第一篇文章</title>
+      <link>https://lanthora.github.io/posts/init/</link>
+      <pubDate>Sat, 25 Sep 2021 14:17:08 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/init/</guid>
+      <description>Hexo迁移到Hugo的原因 喜新厌旧. Hexo 非常成熟,也导致了大量博客主题同质化,相信 Hexo 的用户大概率尝试过 Next 主题吧 Hexo 依赖过于复杂.虽然不太懂前端,但是每次升级都是一件特别痛苦的事情.目前看来 Hugo 好像没有这个问题 这篇博客的意义 水一篇文章,同时看看效果</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>计算机网络 on LANTHORA</title>
+    <link>https://lanthora.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</link>
+    <description>Recent content in 计算机网络 on LANTHORA</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>CC BY 4.0</copyright>
+    <lastBuildDate>Sun, 24 Mar 2024 12:15:43 +0000</lastBuildDate>
+    <atom:link href="https://lanthora.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在 VisionFive 2 上使用 Arch Linux 实现软路由透明代理</title>
+      <link>https://lanthora.github.io/posts/software-router-on-visionfive2-with-archlinux/</link>
+      <pubDate>Sun, 24 Mar 2024 12:15:43 +0000</pubDate>
+      <guid>https://lanthora.github.io/posts/software-router-on-visionfive2-with-archlinux/</guid>
+      <description>为什么要整这么抽象的活 以前用树莓派 4B 做软路由器.有线网口作为 WAN 口,其他设备通过 WiFi 接入.由于树莓派 WiFi 信号比较弱,所以放在了卧室.又由于卧室里没有网线,用了另一个迷你主机的无线接入客厅的无线路由器,然后用迷你主机的有线网口直连树莓派的有线网口.最近给迷你主机换了硬盘以后总是有很大的电流声,考虑到这些设备都用灯光,于是决定把这些设备都放到客厅,并想办法让 WiFi 信号可以覆盖整个房间.&#xA;最初的方案是,让树莓派的 Wan 口接光猫,原本接光猫的无线路由器作为中继.这个方案用了几天感觉还算可以,不过入户的千兆网被树莓派无线网卡的限制成了百兆.&#xA;再后来打算换成常规的有两个有线网口的软路由方案,已经在看买 R2S 还是买 R6S 了.这个时候突然发现 VisionFive2 刚好是双网口.到目前为止 OpenWRT 社区还没有支持 VisionFive 2, 考虑到以前在树莓派上的软路由就是用的 Arch Linux 系统,并且 VisionFive 2 上原本安装的也是 Arch Linux, 所以就有了标题中的想法.&#xA;在 VisionFive 2 上安装 Arch Linux 参考这个帖子完全够用.我在很久以前就安装了系统,并持续滚动更新,可能最新的安装方式已经有差异,相信手上能拿到板子的人都能装好系统.&#xA;软路由 网卡 网卡配置部分参考这篇文章.&#xA;WAN: /etc/systemd/network/end0.network&#xA;[Match] Name=end0 [Network] DHCP=yes DNSSEC=no DNS=8.8.8.8 LAN: /etc/systemd/network/end1.network&#xA;[Match] Name=end1 [Link] Multicast=yes [Network] Address=10.22.33.1/24 MulticastDNS=yes IPMasquerade=both 不要忘了配置服务开机启动&#xA;systemctl status systemd-networkd DNS 用 SmartDNS 实现国内外域名分别查询不同的 DNS 服务器.</description>
+    </item>
+    <item>
+      <title>介绍一款新的虚拟专用网络工具</title>
+      <link>https://lanthora.github.io/posts/introducing-a-new-virtual-private-network-tool/</link>
+      <pubDate>Tue, 16 May 2023 20:36:11 +0800</pubDate>
+      <guid>https://lanthora.github.io/posts/introducing-a-new-virtual-private-network-tool/</guid>
+      <description>什么是虚拟专用网络 互联网上存在大量命名为 VPN (虚拟专用网络)的代理工具,严格意义上来说这些工具应该被称为 Proxy (代理). 这里需要澄清一下它们的区别: VPN 可以让虚拟网络中的设备相互访问; Proxy 则是把一台设备作为跳板访问另一台设备.&#xA;典型的 VPN 有 OpenVPN 和 IPSec, 以及最近几年出现的 WireGuard. 典型的 Proxy 有 Socks5, ShadowSocks, V2Ray. 而 VPN 添加路由和转发配置后,可以实现 Proxy 的效果.这大概就是两个概念混淆的原因吧.&#xA;显然这篇文章介绍的是一款组网工具,而非翻墙工具.&#xA;为什么再实现一款虚拟专用网络工具 上面已经提到许多经典的 VPN, 它们能满足用户的绝大多数场景. 我曾是 WireGuard 用户,但在国内众所周知的网络环境下,它们的设计存在明显的“缺陷”,即明显的协议特征. 这原本不是 VPN 需要考虑的问题,但当流量通过防火墙时,存在被丢包的风险. 我就是在 WireGuard 被丢包后才决定实现一款不容易被防火墙探测的 VPN.&#xA;在此之前,还尝试过我认为很复杂扭曲的方案: 使用可靠的代理转发流量,并在代理之上组网.&#xA;整体设计思路 设计的宗旨是简洁.在不牺牲性能和核心功能的情况下,用最少的代码量和最简单的概念完成设计.&#xA;降低配置复杂度 WireGuard 在 VPN 里配置已经相对较简单了,但对我来说依旧过于复杂.回忆一下你用多长时间完成的第一次 WireGuard 组网. WireGuard 需要强制指定虚拟地址,不适用于想要灵活接入多个客户端并动态分配地址的场景.&#xA;用 WSS(Web Socket Secure) 处理通信,在保证链路数据安全的情况下,免去了配置公私钥的过程. 用口令校验客户端,可以轻松的让新客户端加入网络,这样就能由服务端实现地址动态分配.&#xA;高效的断线重连 在某些情况下 WireGuard 会断线,只有重启客户端才能解决.此时对于一个无人值守的设备,就意味着彻底失联. 曾经为了解决这个问题,给设备配置每天重启一次,这显然是一种很丑陋的解决方案.&#xA;使用 WSS 通信,就可以用 Ping/Pong 完成 TCP 保活,即使 TCP 连接异常断开,应用也可以及时发现,迅速处理.</description>
+    </item>
+  </channel>
+</rss>

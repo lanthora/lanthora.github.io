@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>网络 on LANTHORA</title>
+    <link>https://lanthora.github.io/categories/%E7%BD%91%E7%BB%9C/</link>
+    <description>Recent content in 网络 on LANTHORA</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>CC BY 4.0</copyright>
+    <lastBuildDate>Wed, 29 Sep 2021 21:42:32 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/categories/%E7%BD%91%E7%BB%9C/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>命名空间对netfilter的影响</title>
+      <link>https://lanthora.github.io/posts/namespace-netfilter-hook-point/</link>
+      <pubDate>Wed, 29 Sep 2021 21:42:32 +0800</pubDate>
+      
+      <guid>https://lanthora.github.io/posts/namespace-netfilter-hook-point/</guid>
+      <description>需求 主机内,只允许TCP控制报文(TCP报文仅有头部)向外发送,包含数据的TCP报文禁止外发.
+实现 通过Netfilter对NF_INET_LOCAL_OUT进行hook,丢弃包含数据的TCP报文.
+测试 在虚拟机进行测试.有两条策略:放行ssh;阻断portainer.
+然而配置策略后两个服务都可以正常访问.与没有配置netfilter过滤规则效果相同,怀疑是不是从头开始就是错的
+更换环境再测试,发现表现一切正常.不过这次配置阻断的是hugo server.
+初步认定实现应该是部分正确的,找到两个环境的差异即可.
+再次回到出现异常的环境,通过tcpdump抓包发现每次访问portainer都会有虚拟机内部之间的一次访问.
+恍然间意识到portainer是运行在docker中的服务.
+解决 问题逐渐清晰,docker通过内核命名空间实现资源隔离.
+盲猜NF_INET_LOCAL_OUT这个hook点可能跟命名空间有关,于是把hook点换成了NF_INET_POST_ROUTING.
+问题解决.
+TODO 虽然解决了上述问题,不过新问题也随之产生:
+ 命名空间对netfilter hook点的影响. 命名空间对内核中其他组件的影响  挖个坑,等到必要的时候补上.</description>
+    </item>
+    
+  </channel>
+</rss>

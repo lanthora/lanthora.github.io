@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>未分类 on LANTHORA</title>
+    <link>https://lanthora.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/</link>
+    <description>Recent content in 未分类 on LANTHORA</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>CC BY 4.0</copyright>
+    <lastBuildDate>Sun, 24 Mar 2024 12:15:43 +0000</lastBuildDate>
+    <atom:link href="https://lanthora.github.io/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在 VisionFive 2 上使用 Arch Linux 实现软路由透明代理</title>
+      <link>https://lanthora.github.io/posts/software-router-on-visionfive2-with-archlinux/</link>
+      <pubDate>Sun, 24 Mar 2024 12:15:43 +0000</pubDate>
+      <guid>https://lanthora.github.io/posts/software-router-on-visionfive2-with-archlinux/</guid>
+      <description>为什么要整这么抽象的活 以前用树莓派 4B 做软路由器.有线网口作为 WAN 口,其他设备通过 WiFi 接入.由于树莓派 WiFi 信号比较弱,所以放在了卧室.又由于卧室里没有网线,用了另一个迷你主机的无线接入客厅的无线路由器,然后用迷你主机的有线网口直连树莓派的有线网口.最近给迷你主机换了硬盘以后总是有很大的电流声,考虑到这些设备都用灯光,于是决定把这些设备都放到客厅,并想办法让 WiFi 信号可以覆盖整个房间.&#xA;最初的方案是,让树莓派的 Wan 口接光猫,原本接光猫的无线路由器作为中继.这个方案用了几天感觉还算可以,不过入户的千兆网被树莓派无线网卡的限制成了百兆.&#xA;再后来打算换成常规的有两个有线网口的软路由方案,已经在看买 R2S 还是买 R6S 了.这个时候突然发现 VisionFive2 刚好是双网口.到目前为止 OpenWRT 社区还没有支持 VisionFive 2, 考虑到以前在树莓派上的软路由就是用的 Arch Linux 系统,并且 VisionFive 2 上原本安装的也是 Arch Linux, 所以就有了标题中的想法.&#xA;在 VisionFive 2 上安装 Arch Linux 参考这个帖子完全够用.我在很久以前就安装了系统,并持续滚动更新,可能最新的安装方式已经有差异,相信手上能拿到板子的人都能装好系统.&#xA;软路由 网卡 网卡配置部分参考这篇文章.&#xA;WAN: /etc/systemd/network/end0.network&#xA;[Match] Name=end0 [Network] DHCP=yes DNSSEC=no DNS=8.8.8.8 LAN: /etc/systemd/network/end1.network&#xA;[Match] Name=end1 [Link] Multicast=yes [Network] Address=10.22.33.1/24 MulticastDNS=yes IPMasquerade=both 不要忘了配置服务开机启动&#xA;systemctl status systemd-networkd DNS 用 SmartDNS 实现国内外域名分别查询不同的 DNS 服务器.</description>
+    </item>
+  </channel>
+</rss>
