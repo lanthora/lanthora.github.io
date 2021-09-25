@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>LANTHORA</title>
-    <link>https://lanthora.github.io/</link>
-    <description>Recent content on LANTHORA</description>
+    <title>杂谈 on LANTHORA</title>
+    <link>https://lanthora.github.io/categories/%E6%9D%82%E8%B0%88/</link>
+    <description>Recent content in 杂谈 on LANTHORA</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 25 Sep 2021 14:17:08 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 25 Sep 2021 14:17:08 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/categories/%E6%9D%82%E8%B0%88/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hugo 的第一篇文章</title>
       <link>https://lanthora.github.io/posts/init/</link>

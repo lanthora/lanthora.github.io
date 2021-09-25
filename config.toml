@@ -1,5 +1,23 @@
-baseURL = 'https://lanthora.github.io/'
-languageCode = 'en-us'
-title = 'My New Hugo Site'
-theme = 'diary'
+baseURL = "https://lanthora.github.io"
+languageCode = "en-us"
+title = "LANTHORA"
+theme = "yinyang"
+DefaultContentLanguage = "en"
 publishDir = 'docs'
+
+[params]
+mainSections = ["posts"]
+headTitle = "LANTHORA"
+
+[[params.socials]]
+name = "Github"
+link = "https://github.com/lanthora"
+
+[[params.socials]]
+name = "Telegram"
+link = "https://t.me/lanthora"
+
+
+postHeaderContent = ""
+postFooterContent = ""
+extraCSSFiles = []
