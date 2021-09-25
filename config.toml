@@ -4,6 +4,8 @@ title = "LANTHORA"
 theme = "yinyang"
 DefaultContentLanguage = "en"
 publishDir = 'docs'
+rssLimit = 20
+copyright = "CC BY 4.0"
 
 [params]
 mainSections = ["posts"]
