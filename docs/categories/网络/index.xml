@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>LANTHORA</title>
-    <link>https://lanthora.github.io/</link>
-    <description>Recent content on LANTHORA</description>
+    <title>网络 on LANTHORA</title>
+    <link>https://lanthora.github.io/categories/%E7%BD%91%E7%BB%9C/</link>
+    <description>Recent content in 网络 on LANTHORA</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>CC BY 4.0</copyright>
-    <lastBuildDate>Wed, 29 Sep 2021 21:42:32 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 29 Sep 2021 21:42:32 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/categories/%E7%BD%91%E7%BB%9C/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>记一次无效的Netfilter Hook</title>
       <link>https://lanthora.github.io/posts/no-effect-netfilter-hook/</link>
@@ -22,15 +22,6 @@
 解决 到这个时候问题逐渐清晰,docker通过内核命名空间实现资源隔离. 此时盲猜NF_INET_LOCAL_OUT这个hook点可能跟命名空间有关,于是把hook点换成了NF_INET_POST_ROUTING,问题得以解决.
 坑 虽然解决了上述问题,不过新问题也随之产生:
  命名空间对netfilter的影响. 命名空间对内核中其他组件的影响  挖个坑,等到必要的时候补上.</description>
-    </item>
-    
-    <item>
-      <title>Hugo 的第一篇文章</title>
-      <link>https://lanthora.github.io/posts/init/</link>
-      <pubDate>Sat, 25 Sep 2021 14:17:08 +0800</pubDate>
-      
-      <guid>https://lanthora.github.io/posts/init/</guid>
-      <description>Hexo迁移到Hugo的原因  喜新厌旧.Hexo非常成熟,也导致了大量博客主题同质化,相信Hexo的用户大概率尝试过Next主题吧 Hexo依赖过于复杂.虽然不太懂前端,但是每次升级都是一件特别痛苦的事情.目前看来Hugo好像没有这个问题  这篇博客的意义 水一篇文章,同时看看效果</description>
     </item>
     
   </channel>
