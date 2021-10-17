@@ -7,7 +7,24 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>CC BY 4.0</copyright>
-    <lastBuildDate>Wed, 29 Sep 2021 21:42:32 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 17 Oct 2021 10:12:10 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关闭内核内存写保护</title>
+      <link>https://lanthora.github.io/posts/disable-kernel-memory-write-protection/</link>
+      <pubDate>Sun, 17 Oct 2021 10:12:10 +0800</pubDate>
+      
+      <guid>https://lanthora.github.io/posts/disable-kernel-memory-write-protection/</guid>
+      <description>内存写保护 某块内存的读写执行权限实际上由其页表项(PTE)标记.修改页表项内容可以更改其权限.
+TODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查找到PTE并修改权限,用户态再给只读变量赋值.后面找到了再补上链接吧
+内核中的内存实际上与用户态的内存没有本质上的区别,都可以通过修改页表项改变其权限.
+内核设置只读数据段为只读 内核初始化函数init/main.c/start_kernel中.有这样的一层调用关系: start_kernel &amp;gt; arch_call_rest_init &amp;gt; rest_init &amp;gt; kernel_init &amp;gt; mark_readonly &amp;gt; mark_rodata_ro. 其中mark_rodata_ro由各个架构分别实现.
+ARM64中内存设置只读权限 以ARM64为例,看看写保护是如何生效的.
+在arch/arm64/mm/mmu.c中可以找到mark_rodata_ro.其中__pa_symbol对地址进行常数(kimage_voffset)偏移,并且kimage_voffset是导出符号.
+void mark_rodata_ro(void) { unsigned long section_size; /* * mark .rodata as read only. Use __init_begin rather than __end_rodata * to cover NOTES and EXCEPTION_TABLE. */ section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata; update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata, section_size, PAGE_KERNEL_RO); debug_checkwx(); } update_mapping_prot4个参数分别是:物理地址,虚拟地址,长度,权限.此时就能根据地址范围设置权限了. 此处的物理地址与虚拟地址之间有相对固定的偏移量,四个参数含义明确. __create_pgd_mapping更新完地址后,通过flush_tlb_kernel_range刷新TLB, 当时操作系统课上TLB被称为&amp;quot;快表&amp;quot;, 实际上它是内存的缓存,内存更新后要让缓存失效(或者重新加载)
+需要注意init_mm符号没有导出,在内核模块中使用需要特殊处理,不属于这篇文章的范围,不做赘述.
+static void update_mapping_prot(phys_addr_t phys, unsigned long virt, phys_addr_t size, pgprot_t prot) { if ((virt &amp;gt;= PAGE_END) &amp;amp;&amp;amp; (virt &amp;lt; VMALLOC_START)) { pr_warn(&amp;#34;BUG: not updating mapping for %pa at 0x%016lx - outside kernel range\n&amp;#34;, &amp;amp;phys, virt); return; } __create_pgd_mapping(init_mm.</description>
+    </item>
+    
     <item>
       <title>记一次无效的Netfilter Hook</title>
       <link>https://lanthora.github.io/posts/no-effect-netfilter-hook/</link>
