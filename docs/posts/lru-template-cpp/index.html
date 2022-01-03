@@ -7,8 +7,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="author" content="" />
-  <meta property="og:url" content="https://lanthora.github.io/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" />
-  <link rel="canonical" href="https://lanthora.github.io/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" /><link rel="alternate" type="application/atom+xml" href="https://lanthora.github.ioindex.xml" title="LANTHORA">
+  <meta property="og:url" content="https://lanthora.github.io/posts/lru-template-cpp/" />
+  <link rel="canonical" href="https://lanthora.github.io/posts/lru-template-cpp/" /><link rel="alternate" type="application/atom+xml" href="https://lanthora.github.ioindex.xml" title="LANTHORA">
 
   <script type="application/ld+json">
   {
@@ -18,28 +18,32 @@
            "@type": "WebPage",
            "@id": "https:\/\/lanthora.github.io"
       },
-      "articleSection" : "categories",
-      "name" : "操作系统",
-      "headline" : "操作系统",
-      "description" : "",
+      "articleSection" : "posts",
+      "name" : "LRU算法的C\u002b\u002b实现",
+      "headline" : "LRU算法的C\u002b\u002b实现",
+      "description" : "LeetCode版本 如果只是刷LeetCode的话,可以看看我以前写的版本.这个能过LeetCode,但是实际上存在严重的代码问题,使用了被move的元素.\n实用版本 这个版本解决了上面的问题,同时用模板让元素类型可以自定义.\n#include \u0026lt;list\u0026gt;#include \u0026lt;mutex\u0026gt;#include \u0026lt;unordered_map\u0026gt; template \u0026lt;typename Key, typename Value\u0026gt; class LRUCache { typedef std::list\u0026lt;std::pair\u0026lt;Key, Value\u0026gt;\u0026gt; lru_list; typedef std::unordered_map\u0026lt;Key, typename lru_list::iterator\u0026gt; lru_map; private: lru_list lru_list_; lru_map lru_map_; size_t lru_capacity_ = 1; std::mutex lru_lock_; public: int Get(const Key \u0026amp;key, Value \u0026amp;value) { std::lock_guard\u0026lt;std::mutex\u0026gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_.find(key); if (lru_map_it == lru_map_.end()) return -ESRCH; std::pair\u0026lt;Key, Value\u0026gt; lru_element = *(lru_map_it-\u0026gt;second); value = lru_element.second; lru_list_.erase(lru_map_it-\u0026gt;second); lru_list_.push_front(move(lru_element)); lru_map_[key] = lru_list_.begin(); return 0; } int Put(const Key \u0026amp;key, const Value \u0026amp;value) { std::lock_guard\u0026lt;std::mutex\u0026gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_.",
       "inLanguage" : "en-US",
       "author" : "",
       "creator" : "",
       "publisher": "",
       "accountablePerson" : "",
       "copyrightHolder" : "",
-      "copyrightYear" : "2021",
-      "datePublished": "2021-10-17 10:12:10 \u002b0800 CST",
-      "dateModified" : "2021-10-17 10:12:10 \u002b0800 CST",
-      "url" : "https:\/\/lanthora.github.io\/categories\/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F\/",
+      "copyrightYear" : "2022",
+      "datePublished": "2022-01-03 19:06:57 \u002b0800 CST",
+      "dateModified" : "2022-01-03 19:06:57 \u002b0800 CST",
+      "url" : "https:\/\/lanthora.github.io\/posts\/lru-template-cpp\/",
       "keywords" : [  ]
   }
 </script>
-<title>操作系统</title>
-  <meta property="og:title" content="操作系统" />
+<title>LRU算法的C&#43;&#43;实现</title>
+  <meta property="og:title" content="LRU算法的C&#43;&#43;实现" />
   <meta property="og:type" content="article" />
-  <meta property="og:description" content="" />
-  <meta name="description" content="" />
+  <meta property="og:description" content="LeetCode版本 如果只是刷LeetCode的话,可以看看我以前写的版本.这个能过LeetCode,但是实际上存在严重的代码问题,使用了被move的元素.
+实用版本 这个版本解决了上面的问题,同时用模板让元素类型可以自定义.
+#include &amp;lt;list&amp;gt;#include &amp;lt;mutex&amp;gt;#include &amp;lt;unordered_map&amp;gt; template &amp;lt;typename Key, typename Value&amp;gt; class LRUCache { typedef std::list&amp;lt;std::pair&amp;lt;Key, Value&amp;gt;&amp;gt; lru_list; typedef std::unordered_map&amp;lt;Key, typename lru_list::iterator&amp;gt; lru_map; private: lru_list lru_list_; lru_map lru_map_; size_t lru_capacity_ = 1; std::mutex lru_lock_; public: int Get(const Key &amp;amp;key, Value &amp;amp;value) { std::lock_guard&amp;lt;std::mutex&amp;gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_.find(key); if (lru_map_it == lru_map_.end()) return -ESRCH; std::pair&amp;lt;Key, Value&amp;gt; lru_element = *(lru_map_it-&amp;gt;second); value = lru_element.second; lru_list_.erase(lru_map_it-&amp;gt;second); lru_list_.push_front(move(lru_element)); lru_map_[key] = lru_list_.begin(); return 0; } int Put(const Key &amp;amp;key, const Value &amp;amp;value) { std::lock_guard&amp;lt;std::mutex&amp;gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_." />
+  <meta name="description" content="LeetCode版本 如果只是刷LeetCode的话,可以看看我以前写的版本.这个能过LeetCode,但是实际上存在严重的代码问题,使用了被move的元素.
+实用版本 这个版本解决了上面的问题,同时用模板让元素类型可以自定义.
+#include &amp;lt;list&amp;gt;#include &amp;lt;mutex&amp;gt;#include &amp;lt;unordered_map&amp;gt; template &amp;lt;typename Key, typename Value&amp;gt; class LRUCache { typedef std::list&amp;lt;std::pair&amp;lt;Key, Value&amp;gt;&amp;gt; lru_list; typedef std::unordered_map&amp;lt;Key, typename lru_list::iterator&amp;gt; lru_map; private: lru_list lru_list_; lru_map lru_map_; size_t lru_capacity_ = 1; std::mutex lru_lock_; public: int Get(const Key &amp;amp;key, Value &amp;amp;value) { std::lock_guard&amp;lt;std::mutex&amp;gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_.find(key); if (lru_map_it == lru_map_.end()) return -ESRCH; std::pair&amp;lt;Key, Value&amp;gt; lru_element = *(lru_map_it-&amp;gt;second); value = lru_element.second; lru_list_.erase(lru_map_it-&amp;gt;second); lru_list_.push_front(move(lru_element)); lru_map_[key] = lru_list_.begin(); return 0; } int Put(const Key &amp;amp;key, const Value &amp;amp;value) { std::lock_guard&amp;lt;std::mutex&amp;gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_." />
   <meta property="og:locale" content="en-us" />
 
   
@@ -65,10 +69,11 @@
 
 
 <body>
-  <article class="posts">
+  <article class="post " id="article">
     <div class="row">
       <div class="col-xs-12">
-        
+        <div class="site-header">
+          
 <header>
   <div class="header-title">
     <a href="/"
@@ -93,29 +98,110 @@
 </div>
 <div class="header-line"></div>
 
-
-        <h1 class="taxonomy-term">操作系统</h1>
-        <div id="posts-list">
-          <section>
-            <h1 class="site-date-catalog">2021</h1>
-
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-2">
-                <time datetime="2021-10-17 10:12:10 CST">Oct 17</time>
-              </div>
-              <div class="posts-title col-xs-10">
-                <div class="row">
-                  <div class="col-xs-12">
-                    <a href="/posts/disable-kernel-memory-write-protection/">关闭内核内存写保护</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-          </section>
-          
         </div>
+        <header class="post-header">
+          <h1 class="post-title">LRU算法的C&#43;&#43;实现</h1>
+          
+          <div class="row post-desc">
+            <div class="col-xs-6">
+              
+              <time class="post-date" datetime="2022-01-03 19:06:57 CST">
+                03 Jan 2022
+              </time>
+              
+            </div>
+            <div class="col-xs-6">
+              
+            </div>
+          </div>
+          
+        </header>
+
+        <div class="post-content markdown-body">
+          
+          <h2 id="leetcode版本">LeetCode版本</h2>
+<p>如果只是刷LeetCode的话,可以看看我<a href="https://wiki.armix.cc/zh/leetcode/lru-cache">以前写的版本</a>.这个能过LeetCode,但是实际上存在严重的代码问题,使用了被move的元素.</p>
+<h2 id="实用版本">实用版本</h2>
+<p>这个版本解决了上面的问题,同时用模板让元素类型可以自定义.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;list&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;mutex&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unordered_map&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> Key, <span style="color:#66d9ef">typename</span> Value<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LRUCache</span> {
+    <span style="color:#66d9ef">typedef</span> std<span style="color:#f92672">::</span>list<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>pair<span style="color:#f92672">&lt;</span>Key, Value<span style="color:#f92672">&gt;&gt;</span> lru_list;
+    <span style="color:#66d9ef">typedef</span> std<span style="color:#f92672">::</span>unordered_map<span style="color:#f92672">&lt;</span>Key, <span style="color:#66d9ef">typename</span> lru_list<span style="color:#f92672">::</span>iterator<span style="color:#f92672">&gt;</span> lru_map;
+
+<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+    lru_list lru_list_;
+    lru_map lru_map_;
+    size_t lru_capacity_ <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+    std<span style="color:#f92672">::</span>mutex lru_lock_;
+
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">int</span> Get(<span style="color:#66d9ef">const</span> Key <span style="color:#f92672">&amp;</span>key, Value <span style="color:#f92672">&amp;</span>value) {
+        std<span style="color:#f92672">::</span>lock_guard<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>mutex<span style="color:#f92672">&gt;</span> lock(lru_lock_);
+
+        <span style="color:#66d9ef">typename</span> lru_map<span style="color:#f92672">::</span>iterator lru_map_it <span style="color:#f92672">=</span> lru_map_.find(key);
+        <span style="color:#66d9ef">if</span> (lru_map_it <span style="color:#f92672">==</span> lru_map_.end())
+            <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>ESRCH;
+
+        std<span style="color:#f92672">::</span>pair<span style="color:#f92672">&lt;</span>Key, Value<span style="color:#f92672">&gt;</span> lru_element <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(lru_map_it<span style="color:#f92672">-&gt;</span>second);
+        value <span style="color:#f92672">=</span> lru_element.second;
+        lru_list_.erase(lru_map_it<span style="color:#f92672">-&gt;</span>second);
+        lru_list_.push_front(move(lru_element));
+        lru_map_[key] <span style="color:#f92672">=</span> lru_list_.begin();
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+    }
+    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">Put</span>(<span style="color:#66d9ef">const</span> Key <span style="color:#f92672">&amp;</span>key, <span style="color:#66d9ef">const</span> Value <span style="color:#f92672">&amp;</span>value) {
+        std<span style="color:#f92672">::</span>lock_guard<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>mutex<span style="color:#f92672">&gt;</span> lock(lru_lock_);
+
+        <span style="color:#66d9ef">typename</span> lru_map<span style="color:#f92672">::</span>iterator lru_map_it <span style="color:#f92672">=</span> lru_map_.find(key);
+
+        <span style="color:#66d9ef">if</span> (lru_map_it <span style="color:#f92672">!=</span> lru_map_.end()) {
+            lru_list_.erase(lru_map_it<span style="color:#f92672">-&gt;</span>second);
+        }
+
+        std<span style="color:#f92672">::</span>pair<span style="color:#f92672">&lt;</span>Key, Value<span style="color:#f92672">&gt;</span> lru_element(key, value);
+        lru_list_.push_front(move(lru_element));
+
+        lru_map_[key] <span style="color:#f92672">=</span> lru_list_.begin();
+
+        <span style="color:#66d9ef">while</span> (lru_list_.size() <span style="color:#f92672">&gt;</span> lru_capacity_) {
+            lru_map_.erase(lru_list_.back().first);
+            lru_list_.pop_back();
+        }
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+    }
+    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">SetCapacity</span>(size_t capacity) {
+        lru_capacity_ <span style="color:#f92672">=</span> capacity;
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+    }
+};
+</code></pre></div><p><del>又水了一篇博客</del></p>
+
+        </div>
+
+        <div class="row middle-xs">
+          <div class="col-xs-12">
+            
+          </div>
+        </div>
+        
+          <div class="row">
+            <div class="col-xs-12">
+              
+            </div>
+          </div>
+
+          
+
+
+
+          
+          
+          <div style="height: 50px;"></div>
+          
+        
 
         <div class="site-footer">
   
@@ -135,6 +221,8 @@
     
   
 </script>
+
+  
 
 </body>
 
