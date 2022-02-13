@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>CC BY 4.0</copyright>
-    <lastBuildDate>Mon, 03 Jan 2022 19:06:57 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 13 Feb 2022 10:02:24 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>TCP拥塞控制中的无领导合作</title>
+      <link>https://lanthora.github.io/posts/leaderless-cooperation-in-tcp-congestion-control/</link>
+      <pubDate>Sun, 13 Feb 2022 10:02:24 +0800</pubDate>
+      
+      <guid>https://lanthora.github.io/posts/leaderless-cooperation-in-tcp-congestion-control/</guid>
+      <description>在 没有实时领导的情况下,各部分追求个人最优解,导致集体分化,形成无效竞争. 是否存在一种方式,能让 部分之间协调配合,达到集体最优解.
+TCP拥塞控制为我们寻找这个问题的解决方法提供了一个思路。
+TODO: 补充后续内容,今天先出去玩</description>
+    </item>
+    
     <item>
       <title>LRU算法的C&#43;&#43;实现</title>
       <link>https://lanthora.github.io/posts/lru-template-cpp/</link>

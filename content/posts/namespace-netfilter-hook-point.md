@@ -1,7 +1,7 @@
 ---
 title: "命名空间对netfilter的影响"
 date: 2021-09-29T21:42:32+08:00
-categories: ["网络"]
+categories: ["操作系统"]
 draft: false
 ---
 
