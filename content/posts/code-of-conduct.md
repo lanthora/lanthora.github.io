@@ -1,7 +1,8 @@
 ---
 title: "我的行为准则"
 date: 2022-02-28T15:06:59+08:00
-draft: true
+categories: ["未分类"]
+draft: false
 ---
 
 # 前言
