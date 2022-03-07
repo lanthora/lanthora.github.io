@@ -20,9 +20,7 @@ TODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查
 内核设置只读数据段为只读 内核初始化函数init/main.c/start_kernel中.有这样的一层调用关系: start_kernel &amp;gt; arch_call_rest_init &amp;gt; rest_init &amp;gt; kernel_init &amp;gt; mark_readonly &amp;gt; mark_rodata_ro. 其中mark_rodata_ro由各个架构分别实现.
 ARM64中内存设置只读权限 以ARM64为例,看看写保护是如何生效的.
 在arch/arm64/mm/mmu.c中可以找到mark_rodata_ro.其中__pa_symbol对地址进行常数(kimage_voffset)偏移,并且kimage_voffset是导出符号.
-void mark_rodata_ro(void) { unsigned long section_size; /* * mark .rodata as read only. Use __init_begin rather than __end_rodata * to cover NOTES and EXCEPTION_TABLE. */ section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata; update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata, section_size, PAGE_KERNEL_RO); debug_checkwx(); } update_mapping_prot4个参数分别是:物理地址,虚拟地址,长度,权限.此时就能根据地址范围设置权限了. 此处的物理地址与虚拟地址之间有相对固定的偏移量,四个参数含义明确. __create_pgd_mapping更新完地址后,通过flush_tlb_kernel_range刷新TLB, 当时操作系统课上TLB被称为&amp;quot;快表&amp;quot;, 实际上它是内存的缓存,内存更新后要让缓存失效(或者重新加载)
-需要注意init_mm符号没有导出,在内核模块中使用需要特殊处理,不属于这篇文章的范围,不做赘述.
-static void update_mapping_prot(phys_addr_t phys, unsigned long virt, phys_addr_t size, pgprot_t prot) { if ((virt &amp;gt;= PAGE_END) &amp;amp;&amp;amp; (virt &amp;lt; VMALLOC_START)) { pr_warn(&amp;#34;BUG: not updating mapping for %pa at 0x%016lx - outside kernel range\n&amp;#34;, &amp;amp;phys, virt); return; } __create_pgd_mapping(init_mm.</description>
+void mark_rodata_ro(void) { 	unsigned long section_size;  	/* * mark .rodata as read only. Use __init_begin rather than __end_rodata * to cover NOTES and EXCEPTION_TABLE. */ 	section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata; 	update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata, 	section_size, PAGE_KERNEL_RO);  	debug_checkwx(); } update_mapping_prot4个参数分别是:物理地址,虚拟地址,长度,权限.此时就能根据地址范围设置权限了. 此处的物理地址与虚拟地址之间有相对固定的偏移量,四个参数含义明确.</description>
     </item>
     
     <item>
