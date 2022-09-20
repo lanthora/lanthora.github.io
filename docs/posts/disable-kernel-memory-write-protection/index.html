@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Hugo 0.93.2" />
+  <meta name="generator" content="Hugo 0.102.3" />
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -21,7 +21,7 @@
       "articleSection" : "posts",
       "name" : "关闭内核内存写保护",
       "headline" : "关闭内核内存写保护",
-      "description" : "内存写保护 某块内存的读写执行权限实际上由其页表项(PTE)标记.修改页表项内容可以更改其权限.\nTODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查找到PTE并修改权限,用户态再给只读变量赋值.后面找到了再补上链接吧\n内核中的内存实际上与用户态的内存没有本质上的区别,都可以通过修改页表项改变其权限.\n内核设置只读数据段为只读 内核初始化函数init\/main.c\/start_kernel中.有这样的一层调用关系: start_kernel \u0026gt; arch_call_rest_init \u0026gt; rest_init \u0026gt; kernel_init \u0026gt; mark_readonly \u0026gt; mark_rodata_ro. 其中mark_rodata_ro由各个架构分别实现.\nARM64中内存设置只读权限 以ARM64为例,看看写保护是如何生效的.\n在arch\/arm64\/mm\/mmu.c中可以找到mark_rodata_ro.其中__pa_symbol对地址进行常数(kimage_voffset)偏移,并且kimage_voffset是导出符号.\nvoid mark_rodata_ro(void) { \tunsigned long section_size;  \t\/* * mark .rodata as read only. Use __init_begin rather than __end_rodata * to cover NOTES and EXCEPTION_TABLE. *\/ \tsection_size = (unsigned long)__init_begin - (unsigned long)__start_rodata; \tupdate_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata, \tsection_size, PAGE_KERNEL_RO);  \tdebug_checkwx(); } update_mapping_prot4个参数分别是:物理地址,虚拟地址,长度,权限.此时就能根据地址范围设置权限了. 此处的物理地址与虚拟地址之间有相对固定的偏移量,四个参数含义明确.",
+      "description" : "内存写保护 某块内存的读写执行权限实际上由其页表项(PTE)标记.修改页表项内容可以更改其权限.\nTODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查找到 PTE 并修改权限,用户态再给只读变量赋值.后面找到了再补上链接吧\n内核中的内存实际上与用户态的内存没有本质上的区别,都可以通过修改页表项改变其权限.\n内核设置只读数据段为只读 内核初始化函数 init\/main.c\/start_kernel 中.有这样的一层调用关系: start_kernel \u0026gt; arch_call_rest_init \u0026gt; rest_init \u0026gt; kernel_init \u0026gt; mark_readonly \u0026gt; mark_rodata_ro. 其中 mark_rodata_ro 由各个架构分别实现.\nARM64中内存设置只读权限 以 ARM64 为例,看看写保护是如何生效的.\n在 arch\/arm64\/mm\/mmu.c 中可以找到 mark_rodata_ro .其中 __pa_symbol 对地址进行常数 kimage_voffset 偏移,并且 kimage_voffset 是导出符号.\nvoid mark_rodata_ro(void) { unsigned long section_size; \/* * mark .rodata as read only. Use __init_begin rather than __end_rodata * to cover NOTES and EXCEPTION_TABLE. *\/ section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata; update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata, section_size, PAGE_KERNEL_RO); debug_checkwx(); } update_mapping_prot 4 个参数分别是:物理地址,虚拟地址,长度,权限.",
       "inLanguage" : "en-US",
       "author" : "",
       "creator" : "",
@@ -39,19 +39,19 @@
   <meta property="og:title" content="关闭内核内存写保护" />
   <meta property="og:type" content="article" />
   <meta property="og:description" content="内存写保护 某块内存的读写执行权限实际上由其页表项(PTE)标记.修改页表项内容可以更改其权限.
-TODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查找到PTE并修改权限,用户态再给只读变量赋值.后面找到了再补上链接吧
+TODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查找到 PTE 并修改权限,用户态再给只读变量赋值.后面找到了再补上链接吧
 内核中的内存实际上与用户态的内存没有本质上的区别,都可以通过修改页表项改变其权限.
-内核设置只读数据段为只读 内核初始化函数init/main.c/start_kernel中.有这样的一层调用关系: start_kernel &amp;gt; arch_call_rest_init &amp;gt; rest_init &amp;gt; kernel_init &amp;gt; mark_readonly &amp;gt; mark_rodata_ro. 其中mark_rodata_ro由各个架构分别实现.
-ARM64中内存设置只读权限 以ARM64为例,看看写保护是如何生效的.
-在arch/arm64/mm/mmu.c中可以找到mark_rodata_ro.其中__pa_symbol对地址进行常数(kimage_voffset)偏移,并且kimage_voffset是导出符号.
-void mark_rodata_ro(void) { 	unsigned long section_size;  	/* * mark .rodata as read only. Use __init_begin rather than __end_rodata * to cover NOTES and EXCEPTION_TABLE. */ 	section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata; 	update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata, 	section_size, PAGE_KERNEL_RO);  	debug_checkwx(); } update_mapping_prot4个参数分别是:物理地址,虚拟地址,长度,权限.此时就能根据地址范围设置权限了. 此处的物理地址与虚拟地址之间有相对固定的偏移量,四个参数含义明确." />
+内核设置只读数据段为只读 内核初始化函数 init/main.c/start_kernel 中.有这样的一层调用关系: start_kernel &amp;gt; arch_call_rest_init &amp;gt; rest_init &amp;gt; kernel_init &amp;gt; mark_readonly &amp;gt; mark_rodata_ro. 其中 mark_rodata_ro 由各个架构分别实现.
+ARM64中内存设置只读权限 以 ARM64 为例,看看写保护是如何生效的.
+在 arch/arm64/mm/mmu.c 中可以找到 mark_rodata_ro .其中 __pa_symbol 对地址进行常数 kimage_voffset 偏移,并且 kimage_voffset 是导出符号.
+void mark_rodata_ro(void) { unsigned long section_size; /* * mark .rodata as read only. Use __init_begin rather than __end_rodata * to cover NOTES and EXCEPTION_TABLE. */ section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata; update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata, section_size, PAGE_KERNEL_RO); debug_checkwx(); } update_mapping_prot 4 个参数分别是:物理地址,虚拟地址,长度,权限." />
   <meta name="description" content="内存写保护 某块内存的读写执行权限实际上由其页表项(PTE)标记.修改页表项内容可以更改其权限.
-TODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查找到PTE并修改权限,用户态再给只读变量赋值.后面找到了再补上链接吧
+TODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查找到 PTE 并修改权限,用户态再给只读变量赋值.后面找到了再补上链接吧
 内核中的内存实际上与用户态的内存没有本质上的区别,都可以通过修改页表项改变其权限.
-内核设置只读数据段为只读 内核初始化函数init/main.c/start_kernel中.有这样的一层调用关系: start_kernel &amp;gt; arch_call_rest_init &amp;gt; rest_init &amp;gt; kernel_init &amp;gt; mark_readonly &amp;gt; mark_rodata_ro. 其中mark_rodata_ro由各个架构分别实现.
-ARM64中内存设置只读权限 以ARM64为例,看看写保护是如何生效的.
-在arch/arm64/mm/mmu.c中可以找到mark_rodata_ro.其中__pa_symbol对地址进行常数(kimage_voffset)偏移,并且kimage_voffset是导出符号.
-void mark_rodata_ro(void) { 	unsigned long section_size;  	/* * mark .rodata as read only. Use __init_begin rather than __end_rodata * to cover NOTES and EXCEPTION_TABLE. */ 	section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata; 	update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata, 	section_size, PAGE_KERNEL_RO);  	debug_checkwx(); } update_mapping_prot4个参数分别是:物理地址,虚拟地址,长度,权限.此时就能根据地址范围设置权限了. 此处的物理地址与虚拟地址之间有相对固定的偏移量,四个参数含义明确." />
+内核设置只读数据段为只读 内核初始化函数 init/main.c/start_kernel 中.有这样的一层调用关系: start_kernel &amp;gt; arch_call_rest_init &amp;gt; rest_init &amp;gt; kernel_init &amp;gt; mark_readonly &amp;gt; mark_rodata_ro. 其中 mark_rodata_ro 由各个架构分别实现.
+ARM64中内存设置只读权限 以 ARM64 为例,看看写保护是如何生效的.
+在 arch/arm64/mm/mmu.c 中可以找到 mark_rodata_ro .其中 __pa_symbol 对地址进行常数 kimage_voffset 偏移,并且 kimage_voffset 是导出符号.
+void mark_rodata_ro(void) { unsigned long section_size; /* * mark .rodata as read only. Use __init_begin rather than __end_rodata * to cover NOTES and EXCEPTION_TABLE. */ section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata; update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata, section_size, PAGE_KERNEL_RO); debug_checkwx(); } update_mapping_prot 4 个参数分别是:物理地址,虚拟地址,长度,权限." />
   <meta property="og:locale" content="en-us" />
 
   
@@ -127,17 +127,17 @@ void mark_rodata_ro(void) { 	unsigned long section_size;  	/* * mark .rodata as 
 
         <div class="post-content markdown-body">
           
-          <h1 id="内存写保护">内存写保护</h1>
+          <h2 id="内存写保护">内存写保护</h2>
 <p>某块内存的读写执行权限实际上由其页表项(PTE)标记.修改页表项内容可以更改其权限.</p>
-<p>TODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查找到PTE并修改权限,用户态再给只读变量赋值.后面找到了再补上链接吧</p>
+<p>TODO: 曾经看到过一个项目:根据用户态传递的地址,在内核态查找到 PTE 并修改权限,用户态再给只读变量赋值.后面找到了再补上链接吧</p>
 <p>内核中的内存实际上与用户态的内存没有本质上的区别,都可以通过修改页表项改变其权限.</p>
-<h1 id="内核设置只读数据段为只读">内核设置只读数据段为只读</h1>
-<p>内核初始化函数<code>init/main.c/start_kernel</code>中.有这样的一层调用关系:
+<h2 id="内核设置只读数据段为只读">内核设置只读数据段为只读</h2>
+<p>内核初始化函数 init/main.c/start_kernel 中.有这样的一层调用关系:
 <code>start_kernel &gt; arch_call_rest_init &gt; rest_init &gt; kernel_init &gt; mark_readonly &gt; mark_rodata_ro</code>.
-其中<code>mark_rodata_ro</code>由各个架构分别实现.</p>
-<h1 id="arm64中内存设置只读权限">ARM64中内存设置只读权限</h1>
-<p>以ARM64为例,看看写保护是如何生效的.</p>
-<p>在<code>arch/arm64/mm/mmu.c</code>中可以找到<code>mark_rodata_ro</code>.其中<code>__pa_symbol</code>对地址进行常数(<code>kimage_voffset</code>)偏移,并且<code>kimage_voffset</code>是导出符号.</p>
+其中 mark_rodata_ro 由各个架构分别实现.</p>
+<h2 id="arm64中内存设置只读权限">ARM64中内存设置只读权限</h2>
+<p>以 ARM64 为例,看看写保护是如何生效的.</p>
+<p>在 arch/arm64/mm/mmu.c 中可以找到 mark_rodata_ro .其中 __pa_symbol 对地址进行常数 kimage_voffset 偏移,并且 kimage_voffset 是导出符号.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mark_rodata_ro</span>(<span style="color:#66d9ef">void</span>)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> section_size;
@@ -152,12 +152,12 @@ void mark_rodata_ro(void) { 	unsigned long section_size;  	/* * mark .rodata as 
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	debug_checkwx();
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><code>update_mapping_prot</code>4个参数分别是:物理地址,虚拟地址,长度,权限.此时就能根据地址范围设置权限了.
+</span></span></code></pre></div><p>update_mapping_prot 4 个参数分别是:物理地址,虚拟地址,长度,权限.此时就能根据地址范围设置权限了.
 此处的物理地址与虚拟地址之间有相对固定的偏移量,四个参数含义明确.
-<code>__create_pgd_mapping</code>更新完地址后,通过<code>flush_tlb_kernel_range</code>刷新TLB,
-当时操作系统课上<a href="https://en.wikipedia.org/wiki/Translation_lookaside_buffer">TLB</a>被称为&quot;快表&quot;,
+__create_pgd_mapping 更新完地址后,通过 flush_tlb_kernel_range 刷新 TLB,
+当时操作系统课上 <a href="https://en.wikipedia.org/wiki/Translation_lookaside_buffer">TLB</a> 被称为&quot;快表&quot;,
 实际上它是内存的缓存,内存更新后要让缓存失效(或者重新加载)</p>
-<p>需要注意<code>init_mm</code>符号没有导出,在内核模块中使用需要特殊处理,不属于这篇文章的范围,不做赘述.</p>
+<p>需要注意 init_mm 符号没有导出,在内核模块中使用需要特殊处理,不属于这篇文章的范围,不做赘述.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">update_mapping_prot</span>(phys_addr_t phys, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> virt,
 </span></span><span style="display:flex;"><span>				phys_addr_t size, pgprot_t prot)
 </span></span><span style="display:flex;"><span>{
@@ -173,10 +173,10 @@ void mark_rodata_ro(void) { 	unsigned long section_size;  	/* * mark .rodata as 
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">/* flush the TLBs after updating live kernel mappings */</span>
 </span></span><span style="display:flex;"><span>	flush_tlb_kernel_range(virt, virt <span style="color:#f92672">+</span> size);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>注意函数指针<code>pgtable_alloc</code>为空.
+</span></span></code></pre></div><p>注意函数指针 pgtable_alloc 为空.
 这个函数把先前的需要处理的内存的长度拆分成小块,并逐个处理.
-由于入参是pgd,所以拆分后应该是p4d,后续还会拆分出pud,pmd,pte.
-这是Linux中目前使用的五级页表.</p>
+由于入参是 pgd, 所以拆分后应该是 p4d, 后续还会拆分出 pud, pmd, pte.
+这是 Linux 中目前使用的五级页表.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">__create_pgd_mapping</span>(pgd_t <span style="color:#f92672">*</span>pgdir, phys_addr_t phys,
 </span></span><span style="display:flex;"><span>				 <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> virt, phys_addr_t size,
 </span></span><span style="display:flex;"><span>				 pgprot_t prot,
@@ -205,7 +205,7 @@ void mark_rodata_ro(void) { 	unsigned long section_size;  	/* * mark .rodata as 
 </span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">while</span> (pgdp<span style="color:#f92672">++</span>, addr <span style="color:#f92672">=</span> next, addr <span style="color:#f92672">!=</span> end);
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>TODO: 根据情况决定是否有必要继续补充多级页表中间部分内容</p>
-<p>最终通过<code>set_pte</code>设置页表项</p>
+<p>最终通过 set_pte 设置页表项</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init_pte</span>(pmd_t <span style="color:#f92672">*</span>pmdp, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> addr, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> end,
 </span></span><span style="display:flex;"><span>		     phys_addr_t phys, pgprot_t prot)
 </span></span><span style="display:flex;"><span>{
@@ -230,11 +230,11 @@ void mark_rodata_ro(void) { 	unsigned long section_size;  	/* * mark .rodata as 
 </span></span><span style="display:flex;"><span>	pte_clear_fixmap();
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h1 id="修改内存权限">修改内存权限</h1>
-<p>在<code>init_pte</code>中可以看出,修改权限需要拿到ptep并对修改页表项.
-同文件中的<code>kern_addr_valid</code>函数刚好可以拿到ptep.
+<p>在 init_pte 中可以看出,修改权限需要拿到 ptep 并对修改页表项.
+同文件中的 kern_addr_valid 函数刚好可以拿到 ptep .
 对其进行简单修改就可以实现开关写保护的功能.
-<code>init_mm_ptr</code>是指向<code>init_mm</code>的指针,请自行想办法获取,本文不做描述.
-修改完内存不要忘记刷新tlb.<del>虽然刷新整个tlb比较粗暴,但是它使用方式足够简单,只要不是频繁调用完全可以接受,比如我就可以接受</del></p>
+init_mm_ptr 是指向 init_mm 的指针,请自行想办法获取,本文不做描述.
+修改完内存不要忘记刷新 tlb .<del>虽然刷新整个tlb比较粗暴,但是它使用方式足够简单,只要不是频繁调用完全可以接受,比如我就可以接受</del></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;asm/pgtable-types.h&gt;</span><span style="color:#75715e">
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;asm/pgtable.h&gt;</span><span style="color:#75715e">
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>

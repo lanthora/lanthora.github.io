@@ -7,8 +7,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="author" content="" />
-  <meta property="og:url" content="https://lanthora.github.io/posts/" />
-  <link rel="canonical" href="https://lanthora.github.io/posts/" /><link rel="alternate" type="application/atom+xml" href="https://lanthora.github.ioindex.xml" title="LANTHORA">
+  <meta property="og:url" content="https://lanthora.github.io/posts/hackernel-host-intrusion-detection-and-prevention-system/" />
+  <link rel="canonical" href="https://lanthora.github.io/posts/hackernel-host-intrusion-detection-and-prevention-system/" /><link rel="alternate" type="application/atom+xml" href="https://lanthora.github.ioindex.xml" title="LANTHORA">
 
   <script type="application/ld+json">
   {
@@ -19,9 +19,9 @@
            "@id": "https:\/\/lanthora.github.io"
       },
       "articleSection" : "posts",
-      "name" : "Posts",
-      "headline" : "Posts",
-      "description" : "",
+      "name" : "主机入侵检测与防御系统",
+      "headline" : "主机入侵检测与防御系统",
+      "description" : "引言 本文介绍近期设计实现的主机入侵检测与防御系统. 行文没有章法, 读起来就图一乐.\n初衷 开源社区有类似的产品, 实现方案也大体一致, 如果仅仅是为了达成某项需求, 没必要再造轮子. 我的初衷是学习内核相关的技术, 而个人认为没有什么方法比直接做一个出来更能验证学习成果.\n最初的提交非常简陋, 这大概是每个学习内核的人, 动手写的第一段代码, 在内核模块加载和移除时打印日志. 如果你对内核感兴趣却不知道如何下手, 看过最初的提交, 好像也挺简单? 如果这段代码能驱使任何人动手写第一段内核代码, 将是我莫大的荣幸.\n名称的由来 在最初的提交中就确定项目名为 hackernel, 这是 hack 和 kernel 的组合拼写. 关于 hack 的定义可以参考维基百科. 项目实现过程中采用一些非常规的手段对内核数据进行修改. 因此 hackernel 是个恰好符合项目的特点的名称.\n核心功能实现原理 本项目内核模块提供出来的功能,就是核心功能,也是可完成功能的上限.\n原理上: 1.通过修改系统调用表, 将系统调用修改为自定义的 hook 函数, 根据入参决定是否继续调用真实的系统调用; 2.直接使用内核提供的 hook 函数, 如网络相关的 netfilter hook 点.\nhook 函数有能力决定是否继续向下层调用.允许向下调用并记录行为为检测,根据策略禁止向下调用为防御.也就契合了标题中的检测与防御系统.\n第一层封装 核心功能部分提到的策略, 总归要来自用户态, 标题中的入侵也行为也由用户态定义. 同时为了方便使用, 实现了一个用户态的进程, 让它与内核模块作为一层封装,通过 Unix Domain Socket 对外提供 API. 通过 API 可以清晰的认识本项目所能提供的功能.\n于是本文提到的的第一个项目 hackernel 出现.",
       "inLanguage" : "en-US",
       "author" : "",
       "creator" : "",
@@ -31,15 +31,31 @@
       "copyrightYear" : "2022",
       "datePublished": "2022-09-20 22:03:16 \u002b0800 CST",
       "dateModified" : "2022-09-20 22:03:16 \u002b0800 CST",
-      "url" : "https:\/\/lanthora.github.io\/posts\/",
+      "url" : "https:\/\/lanthora.github.io\/posts\/hackernel-host-intrusion-detection-and-prevention-system\/",
       "keywords" : [  ]
   }
 </script>
-<title>Posts</title>
-  <meta property="og:title" content="Posts" />
+<title>主机入侵检测与防御系统</title>
+  <meta property="og:title" content="主机入侵检测与防御系统" />
   <meta property="og:type" content="article" />
-  <meta property="og:description" content="" />
-  <meta name="description" content="" />
+  <meta property="og:description" content="引言 本文介绍近期设计实现的主机入侵检测与防御系统. 行文没有章法, 读起来就图一乐.
+初衷 开源社区有类似的产品, 实现方案也大体一致, 如果仅仅是为了达成某项需求, 没必要再造轮子. 我的初衷是学习内核相关的技术, 而个人认为没有什么方法比直接做一个出来更能验证学习成果.
+最初的提交非常简陋, 这大概是每个学习内核的人, 动手写的第一段代码, 在内核模块加载和移除时打印日志. 如果你对内核感兴趣却不知道如何下手, 看过最初的提交, 好像也挺简单? 如果这段代码能驱使任何人动手写第一段内核代码, 将是我莫大的荣幸.
+名称的由来 在最初的提交中就确定项目名为 hackernel, 这是 hack 和 kernel 的组合拼写. 关于 hack 的定义可以参考维基百科. 项目实现过程中采用一些非常规的手段对内核数据进行修改. 因此 hackernel 是个恰好符合项目的特点的名称.
+核心功能实现原理 本项目内核模块提供出来的功能,就是核心功能,也是可完成功能的上限.
+原理上: 1.通过修改系统调用表, 将系统调用修改为自定义的 hook 函数, 根据入参决定是否继续调用真实的系统调用; 2.直接使用内核提供的 hook 函数, 如网络相关的 netfilter hook 点.
+hook 函数有能力决定是否继续向下层调用.允许向下调用并记录行为为检测,根据策略禁止向下调用为防御.也就契合了标题中的检测与防御系统.
+第一层封装 核心功能部分提到的策略, 总归要来自用户态, 标题中的入侵也行为也由用户态定义. 同时为了方便使用, 实现了一个用户态的进程, 让它与内核模块作为一层封装,通过 Unix Domain Socket 对外提供 API. 通过 API 可以清晰的认识本项目所能提供的功能.
+于是本文提到的的第一个项目 hackernel 出现." />
+  <meta name="description" content="引言 本文介绍近期设计实现的主机入侵检测与防御系统. 行文没有章法, 读起来就图一乐.
+初衷 开源社区有类似的产品, 实现方案也大体一致, 如果仅仅是为了达成某项需求, 没必要再造轮子. 我的初衷是学习内核相关的技术, 而个人认为没有什么方法比直接做一个出来更能验证学习成果.
+最初的提交非常简陋, 这大概是每个学习内核的人, 动手写的第一段代码, 在内核模块加载和移除时打印日志. 如果你对内核感兴趣却不知道如何下手, 看过最初的提交, 好像也挺简单? 如果这段代码能驱使任何人动手写第一段内核代码, 将是我莫大的荣幸.
+名称的由来 在最初的提交中就确定项目名为 hackernel, 这是 hack 和 kernel 的组合拼写. 关于 hack 的定义可以参考维基百科. 项目实现过程中采用一些非常规的手段对内核数据进行修改. 因此 hackernel 是个恰好符合项目的特点的名称.
+核心功能实现原理 本项目内核模块提供出来的功能,就是核心功能,也是可完成功能的上限.
+原理上: 1.通过修改系统调用表, 将系统调用修改为自定义的 hook 函数, 根据入参决定是否继续调用真实的系统调用; 2.直接使用内核提供的 hook 函数, 如网络相关的 netfilter hook 点.
+hook 函数有能力决定是否继续向下层调用.允许向下调用并记录行为为检测,根据策略禁止向下调用为防御.也就契合了标题中的检测与防御系统.
+第一层封装 核心功能部分提到的策略, 总归要来自用户态, 标题中的入侵也行为也由用户态定义. 同时为了方便使用, 实现了一个用户态的进程, 让它与内核模块作为一层封装,通过 Unix Domain Socket 对外提供 API. 通过 API 可以清晰的认识本项目所能提供的功能.
+于是本文提到的的第一个项目 hackernel 出现." />
   <meta property="og:locale" content="en-us" />
 
   
@@ -65,10 +81,11 @@
 
 
 <body>
-  <article class="posts">
+  <article class="post " id="article">
     <div class="row">
       <div class="col-xs-12">
-        
+        <div class="site-header">
+          
 <header>
   <div class="header-title">
     <a href="/"
@@ -93,99 +110,97 @@
 </div>
 <div class="header-line"></div>
 
-
-        <h1 class="taxonomy-term"></h1>
-        <div id="posts-list">
-          <section>
-            <h1 class="site-date-catalog">2022</h1>
-
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-2">
-                <time datetime="2022-09-20 22:03:16 CST">Sep 20</time>
-              </div>
-              <div class="posts-title col-xs-10">
-                <div class="row">
-                  <div class="col-xs-12">
-                    <a href="/posts/hackernel-host-intrusion-detection-and-prevention-system/">主机入侵检测与防御系统</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-2">
-                <time datetime="2022-02-28 15:06:59 CST">Feb 28</time>
-              </div>
-              <div class="posts-title col-xs-10">
-                <div class="row">
-                  <div class="col-xs-12">
-                    <a href="/posts/code-of-conduct/">我的行为准则</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-2">
-                <time datetime="2022-01-03 19:06:57 CST">Jan 03</time>
-              </div>
-              <div class="posts-title col-xs-10">
-                <div class="row">
-                  <div class="col-xs-12">
-                    <a href="/posts/lru-template-cpp/">LRU算法的C&#43;&#43;实现</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-          </section>
-          <section>
-            <h1 class="site-date-catalog">2021</h1>
-
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-2">
-                <time datetime="2021-10-17 10:12:10 CST">Oct 17</time>
-              </div>
-              <div class="posts-title col-xs-10">
-                <div class="row">
-                  <div class="col-xs-12">
-                    <a href="/posts/disable-kernel-memory-write-protection/">关闭内核内存写保护</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-2">
-                <time datetime="2021-09-29 21:42:32 CST">Sep 29</time>
-              </div>
-              <div class="posts-title col-xs-10">
-                <div class="row">
-                  <div class="col-xs-12">
-                    <a href="/posts/namespace-netfilter-hook-point/">命名空间对netfilter的影响</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-2">
-                <time datetime="2021-09-25 14:17:08 CST">Sep 25</time>
-              </div>
-              <div class="posts-title col-xs-10">
-                <div class="row">
-                  <div class="col-xs-12">
-                    <a href="/posts/init/">Hugo 的第一篇文章</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-          </section>
-          
         </div>
+        <header class="post-header">
+          <h1 class="post-title">主机入侵检测与防御系统</h1>
+          
+          <div class="row post-desc">
+            <div class="col-xs-6">
+              
+              <time class="post-date" datetime="2022-09-20 22:03:16 CST">
+                20 Sep 2022
+              </time>
+              
+            </div>
+            <div class="col-xs-6">
+              
+            </div>
+          </div>
+          
+        </header>
+
+        <div class="post-content markdown-body">
+          
+          <h2 id="引言">引言</h2>
+<p>本文介绍近期设计实现的主机入侵检测与防御系统. 行文没有章法, 读起来就图一乐.</p>
+<h2 id="初衷">初衷</h2>
+<p>开源社区有类似的产品, 实现方案也大体一致, 如果仅仅是为了达成某项需求, 没必要再造轮子. 我的初衷是学习内核相关的技术, 而个人认为没有什么方法比直接做一个出来更能验证学习成果.</p>
+<p><a href="https://github.com/lanthora/hackernel/commit/3fbf8393aba2423503822741e22873cf50f5bf0e">最初的提交</a>非常简陋, 这大概是每个学习内核的人, 动手写的第一段代码, 在内核模块加载和移除时打印日志. 如果你对内核感兴趣却不知道如何下手, 看过最初的提交, 好像也挺简单? 如果这段代码能驱使任何人动手写第一段内核代码, 将是我莫大的荣幸.</p>
+<h2 id="名称的由来">名称的由来</h2>
+<p>在最初的提交中就确定项目名为 hackernel, 这是 hack 和 kernel 的组合拼写.
+关于 hack 的定义可以参考<a href="https://en.wikipedia.org/wiki/Kludge#Computer_science">维基百科</a>.
+项目实现过程中采用<a href="/posts/disable-kernel-memory-write-protection/">一些非常规的手段对内核数据进行修改</a>.
+因此 hackernel 是个恰好符合项目的特点的名称.</p>
+<h2 id="核心功能实现原理">核心功能实现原理</h2>
+<p>本项目内核模块提供出来的功能,就是核心功能,也是可完成功能的上限.</p>
+<p>原理上: 1.通过修改系统调用表, 将系统调用修改为自定义的 hook 函数, 根据入参决定是否继续调用真实的系统调用; 2.直接使用内核提供的 hook 函数, 如网络相关的 netfilter hook 点.</p>
+<p>hook 函数有能力决定是否继续向下层调用.允许向下调用并记录行为为检测,根据策略禁止向下调用为防御.也就契合了标题中的<code>检测与防御系统</code>.</p>
+<h2 id="第一层封装">第一层封装</h2>
+<p>核心功能部分提到的<code>策略</code>, 总归要来自用户态, 标题中的<code>入侵</code>也行为也由用户态定义.
+同时为了方便使用, 实现了一个用户态的进程, 让它与内核模块作为一层封装,通过 Unix Domain Socket 对外提供 <a href="https://hackernel.org/api.html">API</a>.
+通过 API 可以清晰的认识本项目所能提供的功能.</p>
+<p>于是本文提到的的第一个项目 <a href="https://github.com/lanthora/hackernel">hackernel</a> 出现.</p>
+<h2 id="第二层封装">第二层封装</h2>
+<p>第一层封装相比于直接与内核模块通信, 对于开发人员已经足够友好, 但对于非技术敏感的用户, 门槛依旧难以跨越.</p>
+<p>于是有了第二层封装: 通过 Go 把这些第一层 API 封装成函数以方便开发者调用.</p>
+<p>敏感的朋友可能已经发现: 第二层封装本质上是作为客户端使用第一层封装提供的服务, 同时又作为服务被其他应用调用.
+为了解耦和方便扩展, 选择用 Go 实现并作为一个项目独立维护.
+选择 Go 的根本原因是,当时可选的语言只有 Go 和 Rust, 而 Go 刚好有我需要的库.(如果你认为有更好的选择,欢迎自行实现第二层封装)</p>
+<p>此时项目就需要一个名字, 当时 <em>海贼王</em> 三大古代兵器只有天王乌拉诺斯的还没有揭晓, 于是选择它作为新项目的名字.</p>
+<p>于是本文提到的的第二个项目 <a href="https://github.com/lanthora/uranus">Uranus</a> 出现.</p>
+<h2 id="应用">应用</h2>
+<p>显然第二层封装是库, 于是在第二层封装之上, 实现了<a href="https://github.com/lanthora/uranus/tree/master/cmd">三个应用</a>.
+这三个应用会在编译 Uranus 时编译出来, 也是提供给最终用户的产品.</p>
+<h3 id="uranus-sample">uranus-sample</h3>
+<p>示例程序, 展示库的使用方法, 验证各底层模块是否正常工作.</p>
+<h3 id="uranus-telegram">uranus-telegram</h3>
+<p>目前对这套程序推荐的使用方式, 也是作者自己使用的方式.
+通过 Telegram 机器人, 上报系统中正在发生的进程创建事件.
+监控入侵事件.</p>
+<h3 id="uranus-web">uranus-web</h3>
+<p>以网页的形式展示功能.目前后端工作已经基本完成. 前端尚不可用.
+本文提到的第三个项目, 前端项目 <a href="https://github.com/lanthora/venus">venus</a> 目前处于停滞状态.
+在有人提出明确的需求且愿意主动维护这个项目前, 将长期处于停滞状态.</p>
+<p>在选择前端项目名称时, 发现 uranus 是罗马神话的神, 考虑到这是个前端项目, 罗马神话里维纳斯可能是最合适的选择.</p>
+<h2 id="安装">安装</h2>
+<p>这里你将看到本文提到的第四个项目,即罗马神话中的创造之母 <a href="https://github.com/lanthora/tellus">tellus</a>.
+这个项目包含前三个项目.并提供编译安装方法.</p>
+<p>对于 Arch Linux 用户,提供 AUR 方式安装.使用 yay 或者任何你喜欢的 AUR Helper.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>yay -S tellus-git
+</span></span></code></pre></div>
+        </div>
+
+        <div class="row middle-xs">
+          <div class="col-xs-12">
+            
+          </div>
+        </div>
+        
+          <div class="row">
+            <div class="col-xs-12">
+              
+            </div>
+          </div>
+
+          
+
+
+
+          
+          
+          <div style="height: 50px;"></div>
+          
+        
 
         <div class="site-footer">
   
@@ -205,6 +220,8 @@
     
   
 </script>
+
+  
 
 </body>
 
