@@ -19,6 +19,10 @@ link = "https://github.com/lanthora"
 name = "Telegram"
 link = "https://t.me/lanthora"
 
+[[params.socials]]
+name = "Mail"
+link = "mailto:lanthora@outlook.com"
+
 
 postHeaderContent = ""
 postFooterContent = ""
