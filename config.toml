@@ -20,7 +20,11 @@ name = "Telegram"
 link = "https://t.me/lanthora"
 
 [[params.socials]]
-name = "Mail"
+name = "Matrix"
+link = "https://matrix.to/#/@lanthora:mozilla.org"
+
+[[params.socials]]
+name = "Email"
 link = "mailto:lanthora@outlook.com"
 
 

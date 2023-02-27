@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Hugo 0.102.3" />
+  <meta name="generator" content="Hugo 0.110.0">
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -101,7 +101,11 @@ void mark_rodata_ro(void) { unsigned long section_size; /* * mark .rodata as rea
   </div>
   
   <div class="header-item">
-    <a href="mailto:lanthora@outlook.com" target="_blank">Mail</a>
+    <a href="https://matrix.to/#/@lanthora:mozilla.org" target="_blank">Matrix</a>
+  </div>
+  
+  <div class="header-item">
+    <a href="mailto:lanthora@outlook.com" target="_blank">Email</a>
   </div>
   
 </div>
@@ -151,10 +155,10 @@ void mark_rodata_ro(void) { unsigned long section_size; /* * mark .rodata as rea
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * to cover NOTES and EXCEPTION_TABLE.
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 */</span>
 </span></span><span style="display:flex;"><span>	section_size <span style="color:#f92672">=</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>)__init_begin <span style="color:#f92672">-</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>)__start_rodata;
-</span></span><span style="display:flex;"><span>	update_mapping_prot(__pa_symbol(__start_rodata), (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>)__start_rodata,
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">update_mapping_prot</span>(<span style="color:#a6e22e">__pa_symbol</span>(__start_rodata), (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>)__start_rodata,
 </span></span><span style="display:flex;"><span>			    section_size, PAGE_KERNEL_RO);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	debug_checkwx();
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">debug_checkwx</span>();
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>update_mapping_prot 4 个参数分别是:物理地址,虚拟地址,长度,权限.此时就能根据地址范围设置权限了.
 此处的物理地址与虚拟地址之间有相对固定的偏移量,四个参数含义明确.
@@ -162,76 +166,76 @@ __create_pgd_mapping 更新完地址后,通过 flush_tlb_kernel_range 刷新 TLB
 当时操作系统课上 <a href="https://en.wikipedia.org/wiki/Translation_lookaside_buffer">TLB</a> 被称为&quot;快表&quot;,
 实际上它是内存的缓存,内存更新后要让缓存失效(或者重新加载)</p>
 <p>需要注意 init_mm 符号没有导出,在内核模块中使用需要特殊处理,不属于这篇文章的范围,不做赘述.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">update_mapping_prot</span>(phys_addr_t phys, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> virt,
-</span></span><span style="display:flex;"><span>				phys_addr_t size, pgprot_t prot)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">update_mapping_prot</span>(<span style="color:#66d9ef">phys_addr_t</span> phys, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> virt,
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">phys_addr_t</span> size, <span style="color:#66d9ef">pgprot_t</span> prot)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> ((virt <span style="color:#f92672">&gt;=</span> PAGE_END) <span style="color:#f92672">&amp;&amp;</span> (virt <span style="color:#f92672">&lt;</span> VMALLOC_START)) {
-</span></span><span style="display:flex;"><span>		pr_warn(<span style="color:#e6db74">&#34;BUG: not updating mapping for %pa at 0x%016lx - outside kernel range</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">pr_warn</span>(<span style="color:#e6db74">&#34;BUG: not updating mapping for %pa at 0x%016lx - outside kernel range</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,
 </span></span><span style="display:flex;"><span>			<span style="color:#f92672">&amp;</span>phys, virt);
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>;
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	__create_pgd_mapping(init_mm.pgd, phys, virt, size, prot, NULL,
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">__create_pgd_mapping</span>(init_mm.pgd, phys, virt, size, prot, NULL,
 </span></span><span style="display:flex;"><span>			     NO_CONT_MAPPINGS);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">/* flush the TLBs after updating live kernel mappings */</span>
-</span></span><span style="display:flex;"><span>	flush_tlb_kernel_range(virt, virt <span style="color:#f92672">+</span> size);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">flush_tlb_kernel_range</span>(virt, virt <span style="color:#f92672">+</span> size);
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>注意函数指针 pgtable_alloc 为空.
 这个函数把先前的需要处理的内存的长度拆分成小块,并逐个处理.
 由于入参是 pgd, 所以拆分后应该是 p4d, 后续还会拆分出 pud, pmd, pte.
 这是 Linux 中目前使用的五级页表.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">__create_pgd_mapping</span>(pgd_t <span style="color:#f92672">*</span>pgdir, phys_addr_t phys,
-</span></span><span style="display:flex;"><span>				 <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> virt, phys_addr_t size,
-</span></span><span style="display:flex;"><span>				 pgprot_t prot,
-</span></span><span style="display:flex;"><span>				 phys_addr_t (<span style="color:#f92672">*</span>pgtable_alloc)(<span style="color:#66d9ef">int</span>),
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">__create_pgd_mapping</span>(<span style="color:#66d9ef">pgd_t</span> <span style="color:#f92672">*</span>pgdir, <span style="color:#66d9ef">phys_addr_t</span> phys,
+</span></span><span style="display:flex;"><span>				 <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> virt, <span style="color:#66d9ef">phys_addr_t</span> size,
+</span></span><span style="display:flex;"><span>				 <span style="color:#66d9ef">pgprot_t</span> prot,
+</span></span><span style="display:flex;"><span>				 <span style="color:#66d9ef">phys_addr_t</span> (<span style="color:#f92672">*</span>pgtable_alloc)(<span style="color:#66d9ef">int</span>),
 </span></span><span style="display:flex;"><span>				 <span style="color:#66d9ef">int</span> flags)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> addr, end, next;
-</span></span><span style="display:flex;"><span>	pgd_t <span style="color:#f92672">*</span>pgdp <span style="color:#f92672">=</span> pgd_offset_pgd(pgdir, virt);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">pgd_t</span> <span style="color:#f92672">*</span>pgdp <span style="color:#f92672">=</span> <span style="color:#a6e22e">pgd_offset_pgd</span>(pgdir, virt);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">/*
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * If the virtual and physical address don&#39;t have the same offset
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * within a page, we cannot map the region as the caller expects.
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 */</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (WARN_ON((phys <span style="color:#f92672">^</span> virt) <span style="color:#f92672">&amp;</span> <span style="color:#f92672">~</span>PAGE_MASK))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">WARN_ON</span>((phys <span style="color:#f92672">^</span> virt) <span style="color:#f92672">&amp;</span> <span style="color:#f92672">~</span>PAGE_MASK))
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	phys <span style="color:#f92672">&amp;=</span> PAGE_MASK;
 </span></span><span style="display:flex;"><span>	addr <span style="color:#f92672">=</span> virt <span style="color:#f92672">&amp;</span> PAGE_MASK;
-</span></span><span style="display:flex;"><span>	end <span style="color:#f92672">=</span> PAGE_ALIGN(virt <span style="color:#f92672">+</span> size);
+</span></span><span style="display:flex;"><span>	end <span style="color:#f92672">=</span> <span style="color:#a6e22e">PAGE_ALIGN</span>(virt <span style="color:#f92672">+</span> size);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">do</span> {
-</span></span><span style="display:flex;"><span>		next <span style="color:#f92672">=</span> pgd_addr_end(addr, end);
-</span></span><span style="display:flex;"><span>		alloc_init_pud(pgdp, addr, next, phys, prot, pgtable_alloc,
+</span></span><span style="display:flex;"><span>		next <span style="color:#f92672">=</span> <span style="color:#a6e22e">pgd_addr_end</span>(addr, end);
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">alloc_init_pud</span>(pgdp, addr, next, phys, prot, pgtable_alloc,
 </span></span><span style="display:flex;"><span>			       flags);
 </span></span><span style="display:flex;"><span>		phys <span style="color:#f92672">+=</span> next <span style="color:#f92672">-</span> addr;
 </span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">while</span> (pgdp<span style="color:#f92672">++</span>, addr <span style="color:#f92672">=</span> next, addr <span style="color:#f92672">!=</span> end);
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>TODO: 根据情况决定是否有必要继续补充多级页表中间部分内容</p>
 <p>最终通过 set_pte 设置页表项</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init_pte</span>(pmd_t <span style="color:#f92672">*</span>pmdp, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> addr, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> end,
-</span></span><span style="display:flex;"><span>		     phys_addr_t phys, pgprot_t prot)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init_pte</span>(<span style="color:#66d9ef">pmd_t</span> <span style="color:#f92672">*</span>pmdp, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> addr, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> end,
+</span></span><span style="display:flex;"><span>		     <span style="color:#66d9ef">phys_addr_t</span> phys, <span style="color:#66d9ef">pgprot_t</span> prot)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	pte_t <span style="color:#f92672">*</span>ptep;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">pte_t</span> <span style="color:#f92672">*</span>ptep;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	ptep <span style="color:#f92672">=</span> pte_set_fixmap_offset(pmdp, addr);
+</span></span><span style="display:flex;"><span>	ptep <span style="color:#f92672">=</span> <span style="color:#a6e22e">pte_set_fixmap_offset</span>(pmdp, addr);
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">do</span> {
-</span></span><span style="display:flex;"><span>		pte_t old_pte <span style="color:#f92672">=</span> READ_ONCE(<span style="color:#f92672">*</span>ptep);
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">pte_t</span> old_pte <span style="color:#f92672">=</span> <span style="color:#a6e22e">READ_ONCE</span>(<span style="color:#f92672">*</span>ptep);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		set_pte(ptep, pfn_pte(__phys_to_pfn(phys), prot));
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">set_pte</span>(ptep, <span style="color:#a6e22e">pfn_pte</span>(<span style="color:#a6e22e">__phys_to_pfn</span>(phys), prot));
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>		<span style="color:#75715e">/*
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">		 * After the PTE entry has been populated once, we
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">		 * only allow updates to the permission attributes.
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">		 */</span>
-</span></span><span style="display:flex;"><span>		BUG_ON(<span style="color:#f92672">!</span>pgattr_change_is_safe(pte_val(old_pte),
-</span></span><span style="display:flex;"><span>					      READ_ONCE(pte_val(<span style="color:#f92672">*</span>ptep))));
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">BUG_ON</span>(<span style="color:#f92672">!</span><span style="color:#a6e22e">pgattr_change_is_safe</span>(<span style="color:#a6e22e">pte_val</span>(old_pte),
+</span></span><span style="display:flex;"><span>					      <span style="color:#a6e22e">READ_ONCE</span>(<span style="color:#a6e22e">pte_val</span>(<span style="color:#f92672">*</span>ptep))));
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>		phys <span style="color:#f92672">+=</span> PAGE_SIZE;
 </span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">while</span> (ptep<span style="color:#f92672">++</span>, addr <span style="color:#f92672">+=</span> PAGE_SIZE, addr <span style="color:#f92672">!=</span> end);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	pte_clear_fixmap();
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pte_clear_fixmap</span>();
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h1 id="修改内存权限">修改内存权限</h1>
 <p>在 init_pte 中可以看出,修改权限需要拿到 ptep 并对修改页表项.
@@ -242,68 +246,68 @@ init_mm_ptr 是指向 init_mm 的指针,请自行想办法获取,本文不做描
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;asm/pgtable-types.h&gt;</span><span style="color:#75715e">
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;asm/pgtable.h&gt;</span><span style="color:#75715e">
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">get_kern_addr_ptep</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> addr, pte_t <span style="color:#f92672">**</span>ptepp)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">get_kern_addr_ptep</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> addr, <span style="color:#66d9ef">pte_t</span> <span style="color:#f92672">**</span>ptepp)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	pgd_t <span style="color:#f92672">*</span>pgdp;
-</span></span><span style="display:flex;"><span>	p4d_t <span style="color:#f92672">*</span>p4dp;
-</span></span><span style="display:flex;"><span>	pud_t <span style="color:#f92672">*</span>pudp, pud;
-</span></span><span style="display:flex;"><span>	pmd_t <span style="color:#f92672">*</span>pmdp, pmd;
-</span></span><span style="display:flex;"><span>	pte_t <span style="color:#f92672">*</span>ptep, pte;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">pgd_t</span> <span style="color:#f92672">*</span>pgdp;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">p4d_t</span> <span style="color:#f92672">*</span>p4dp;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">pud_t</span> <span style="color:#f92672">*</span>pudp, pud;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">pmd_t</span> <span style="color:#f92672">*</span>pmdp, pmd;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">pte_t</span> <span style="color:#f92672">*</span>ptep, pte;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	addr <span style="color:#f92672">=</span> arch_kasan_reset_tag(addr);
+</span></span><span style="display:flex;"><span>	addr <span style="color:#f92672">=</span> <span style="color:#a6e22e">arch_kasan_reset_tag</span>(addr);
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> ((((<span style="color:#66d9ef">long</span>)addr) <span style="color:#f92672">&gt;&gt;</span> VA_BITS) <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1UL</span>)
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	pgdp <span style="color:#f92672">=</span> (init_mm_ptr<span style="color:#f92672">-&gt;</span>pgd <span style="color:#f92672">+</span>
 </span></span><span style="display:flex;"><span>		(((addr) <span style="color:#f92672">&gt;&gt;</span> PGDIR_SHIFT) <span style="color:#f92672">&amp;</span> (PTRS_PER_PGD <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)));
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (pgd_none(READ_ONCE(<span style="color:#f92672">*</span>pgdp)))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">pgd_none</span>(<span style="color:#a6e22e">READ_ONCE</span>(<span style="color:#f92672">*</span>pgdp)))
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	p4dp <span style="color:#f92672">=</span> p4d_offset(pgdp, addr);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (p4d_none(READ_ONCE(<span style="color:#f92672">*</span>p4dp)))
+</span></span><span style="display:flex;"><span>	p4dp <span style="color:#f92672">=</span> <span style="color:#a6e22e">p4d_offset</span>(pgdp, addr);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">p4d_none</span>(<span style="color:#a6e22e">READ_ONCE</span>(<span style="color:#f92672">*</span>p4dp)))
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	pudp <span style="color:#f92672">=</span> pud_offset(p4dp, addr);
-</span></span><span style="display:flex;"><span>	pud <span style="color:#f92672">=</span> READ_ONCE(<span style="color:#f92672">*</span>pudp);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (pud_none(pud))
+</span></span><span style="display:flex;"><span>	pudp <span style="color:#f92672">=</span> <span style="color:#a6e22e">pud_offset</span>(p4dp, addr);
+</span></span><span style="display:flex;"><span>	pud <span style="color:#f92672">=</span> <span style="color:#a6e22e">READ_ONCE</span>(<span style="color:#f92672">*</span>pudp);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">pud_none</span>(pud))
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (pud_sect(pud))
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> pfn_valid(pud_pfn(pud));
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">pud_sect</span>(pud))
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pfn_valid</span>(<span style="color:#a6e22e">pud_pfn</span>(pud));
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	pmdp <span style="color:#f92672">=</span> pmd_offset(pudp, addr);
-</span></span><span style="display:flex;"><span>	pmd <span style="color:#f92672">=</span> READ_ONCE(<span style="color:#f92672">*</span>pmdp);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (pmd_none(pmd))
+</span></span><span style="display:flex;"><span>	pmdp <span style="color:#f92672">=</span> <span style="color:#a6e22e">pmd_offset</span>(pudp, addr);
+</span></span><span style="display:flex;"><span>	pmd <span style="color:#f92672">=</span> <span style="color:#a6e22e">READ_ONCE</span>(<span style="color:#f92672">*</span>pmdp);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">pmd_none</span>(pmd))
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (pmd_sect(pmd))
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> pfn_valid(pmd_pfn(pmd));
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">pmd_sect</span>(pmd))
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pfn_valid</span>(<span style="color:#a6e22e">pmd_pfn</span>(pmd));
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	ptep <span style="color:#f92672">=</span> pte_offset_kernel(pmdp, addr);
+</span></span><span style="display:flex;"><span>	ptep <span style="color:#f92672">=</span> <span style="color:#a6e22e">pte_offset_kernel</span>(pmdp, addr);
 </span></span><span style="display:flex;"><span>	<span style="color:#f92672">*</span>ptepp <span style="color:#f92672">=</span> ptep;
 </span></span><span style="display:flex;"><span>	pte <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>ptep;
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (pte_none(pte))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">pte_none</span>(pte))
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> pfn_valid(pte_pfn(pte));
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pfn_valid</span>(<span style="color:#a6e22e">pte_pfn</span>(pte));
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">enable_wp</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> addr)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	pte_t <span style="color:#f92672">*</span>ptep;
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>get_kern_addr_ptep(addr, <span style="color:#f92672">&amp;</span>ptep))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">pte_t</span> <span style="color:#f92672">*</span>ptep;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">get_kern_addr_ptep</span>(addr, <span style="color:#f92672">&amp;</span>ptep))
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>;
-</span></span><span style="display:flex;"><span>	set_pte(ptep, pte_wrprotect(<span style="color:#f92672">*</span>ptep));
-</span></span><span style="display:flex;"><span>	flush_tlb_all();
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">set_pte</span>(ptep, <span style="color:#a6e22e">pte_wrprotect</span>(<span style="color:#f92672">*</span>ptep));
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">flush_tlb_all</span>();
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">disable_wp</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> addr)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	pte_t <span style="color:#f92672">*</span>ptep;
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>get_kern_addr_ptep(addr, <span style="color:#f92672">&amp;</span>ptep))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">pte_t</span> <span style="color:#f92672">*</span>ptep;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">get_kern_addr_ptep</span>(addr, <span style="color:#f92672">&amp;</span>ptep))
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>;
-</span></span><span style="display:flex;"><span>	set_pte(ptep, pte_mkwrite(<span style="color:#f92672">*</span>ptep));
-</span></span><span style="display:flex;"><span>	flush_tlb_all();
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">set_pte</span>(ptep, <span style="color:#a6e22e">pte_mkwrite</span>(<span style="color:#f92672">*</span>ptep));
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">flush_tlb_all</span>();
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>完结撒花~</p>
 
