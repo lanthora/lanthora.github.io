@@ -1,9 +1,22 @@
 ---
-title: "命名空间对netfilter的影响"
+title: "命名空间对 netfilter 的影响"
 date: 2021-09-29T21:42:32+08:00
 categories: ["操作系统"]
 draft: false
 ---
+
+# TL;DR
+
+在 [netfilter: Per network namespace netfilter hooks](https://github.com/torvalds/linux/commit/085db2c04557d31db61541f361bd8b4de92c9939) 后,需要指定网络命名空间,当指定的命名空间为 init_net 的时候,与容器内进程的命名空间不一致,导致无法被 hook.
+
+正确的 hook 方法是使用 for_each_net 宏获取所有 net 后再处理,而不是固定的使用 init_net.
+
+```c
+struct net *net;
+for_each_net (net) {
+        nf_register_net_hook(net, &reg)
+}
+```
 
 # 需求
 
@@ -34,13 +47,3 @@ draft: false
 盲猜 NF_INET_LOCAL_OUT 这个 hook 点可能跟命名空间有关,于是把 hook 点换成了 NF_INET_POST_ROUTING .
 
 问题解决.
-
-# TODO
-
-虽然解决了上述问题,不过新问题也随之产生:
-
-1. 命名空间对 netfilter hook 点的影响.
-2. 命名空间对内核中其他组件的影响
-
-挖个坑,等到必要的时候补上.
-
