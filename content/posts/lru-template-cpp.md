@@ -1,5 +1,5 @@
 ---
-title: "LRU算法的C++实现"
+title: "LRU 算法的 C++ 实现"
 date: 2022-01-03T19:06:57+08:00
 categories: ["数据结构"]
 draft: false
@@ -7,7 +7,7 @@ draft: false
 
 ## LeetCode版本
 
-如果只是刷 LeetCode 的话,可以看看我[以前写的版本](https://wiki.armix.cc/zh/leetcode/lru-cache).这个能过 LeetCode ,但是实际上存在严重的代码问题,使用了被 move 的元素.
+如果只是刷 LeetCode 的话,可以看看我[以前写的版本](https://wiki.armix.cc/zh/leetcode/lru-cache).这个能过 LeetCode, 但是实际上存在严重的代码问题,使用了被 move 的元素.
 
 ## 实用版本
 

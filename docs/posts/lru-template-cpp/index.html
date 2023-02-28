@@ -19,9 +19,9 @@
            "@id": "https:\/\/lanthora.github.io"
       },
       "articleSection" : "posts",
-      "name" : "LRU算法的C\u002b\u002b实现",
-      "headline" : "LRU算法的C\u002b\u002b实现",
-      "description" : "LeetCode版本 如果只是刷 LeetCode 的话,可以看看我以前写的版本.这个能过 LeetCode ,但是实际上存在严重的代码问题,使用了被 move 的元素.\n实用版本 这个版本解决了上面的问题,同时用模板让元素类型可以自定义.\n#include \u0026lt;list\u0026gt; #include \u0026lt;mutex\u0026gt; #include \u0026lt;unordered_map\u0026gt; template \u0026lt;typename Key, typename Value\u0026gt; class LRUCache { typedef std::list\u0026lt;std::pair\u0026lt;Key, Value\u0026gt;\u0026gt; lru_list; typedef std::unordered_map\u0026lt;Key, typename lru_list::iterator\u0026gt; lru_map; private: lru_list lru_list_; lru_map lru_map_; size_t lru_capacity_ = 1; std::mutex lru_lock_; public: int Get(const Key \u0026amp;key, Value \u0026amp;value) { std::lock_guard\u0026lt;std::mutex\u0026gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_.find(key); if (lru_map_it == lru_map_.end()) return -ESRCH; std::pair\u0026lt;Key, Value\u0026gt; lru_element = *(lru_map_it-\u0026gt;second); value = lru_element.",
+      "name" : "LRU 算法的 C\u002b\u002b 实现",
+      "headline" : "LRU 算法的 C\u002b\u002b 实现",
+      "description" : "LeetCode版本 如果只是刷 LeetCode 的话,可以看看我以前写的版本.这个能过 LeetCode, 但是实际上存在严重的代码问题,使用了被 move 的元素.\n实用版本 这个版本解决了上面的问题,同时用模板让元素类型可以自定义.\n#include \u0026lt;list\u0026gt; #include \u0026lt;mutex\u0026gt; #include \u0026lt;unordered_map\u0026gt; template \u0026lt;typename Key, typename Value\u0026gt; class LRUCache { typedef std::list\u0026lt;std::pair\u0026lt;Key, Value\u0026gt;\u0026gt; lru_list; typedef std::unordered_map\u0026lt;Key, typename lru_list::iterator\u0026gt; lru_map; private: lru_list lru_list_; lru_map lru_map_; size_t lru_capacity_ = 1; std::mutex lru_lock_; public: int Get(const Key \u0026amp;key, Value \u0026amp;value) { std::lock_guard\u0026lt;std::mutex\u0026gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_.find(key); if (lru_map_it == lru_map_.end()) return -ESRCH; std::pair\u0026lt;Key, Value\u0026gt; lru_element = *(lru_map_it-\u0026gt;second); value = lru_element.",
       "inLanguage" : "en-US",
       "author" : "",
       "creator" : "",
@@ -35,13 +35,13 @@
       "keywords" : [  ]
   }
 </script>
-<title>LRU算法的C&#43;&#43;实现</title>
-  <meta property="og:title" content="LRU算法的C&#43;&#43;实现" />
+<title>LRU 算法的 C&#43;&#43; 实现</title>
+  <meta property="og:title" content="LRU 算法的 C&#43;&#43; 实现" />
   <meta property="og:type" content="article" />
-  <meta property="og:description" content="LeetCode版本 如果只是刷 LeetCode 的话,可以看看我以前写的版本.这个能过 LeetCode ,但是实际上存在严重的代码问题,使用了被 move 的元素.
+  <meta property="og:description" content="LeetCode版本 如果只是刷 LeetCode 的话,可以看看我以前写的版本.这个能过 LeetCode, 但是实际上存在严重的代码问题,使用了被 move 的元素.
 实用版本 这个版本解决了上面的问题,同时用模板让元素类型可以自定义.
 #include &amp;lt;list&amp;gt; #include &amp;lt;mutex&amp;gt; #include &amp;lt;unordered_map&amp;gt; template &amp;lt;typename Key, typename Value&amp;gt; class LRUCache { typedef std::list&amp;lt;std::pair&amp;lt;Key, Value&amp;gt;&amp;gt; lru_list; typedef std::unordered_map&amp;lt;Key, typename lru_list::iterator&amp;gt; lru_map; private: lru_list lru_list_; lru_map lru_map_; size_t lru_capacity_ = 1; std::mutex lru_lock_; public: int Get(const Key &amp;amp;key, Value &amp;amp;value) { std::lock_guard&amp;lt;std::mutex&amp;gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_.find(key); if (lru_map_it == lru_map_.end()) return -ESRCH; std::pair&amp;lt;Key, Value&amp;gt; lru_element = *(lru_map_it-&amp;gt;second); value = lru_element." />
-  <meta name="description" content="LeetCode版本 如果只是刷 LeetCode 的话,可以看看我以前写的版本.这个能过 LeetCode ,但是实际上存在严重的代码问题,使用了被 move 的元素.
+  <meta name="description" content="LeetCode版本 如果只是刷 LeetCode 的话,可以看看我以前写的版本.这个能过 LeetCode, 但是实际上存在严重的代码问题,使用了被 move 的元素.
 实用版本 这个版本解决了上面的问题,同时用模板让元素类型可以自定义.
 #include &amp;lt;list&amp;gt; #include &amp;lt;mutex&amp;gt; #include &amp;lt;unordered_map&amp;gt; template &amp;lt;typename Key, typename Value&amp;gt; class LRUCache { typedef std::list&amp;lt;std::pair&amp;lt;Key, Value&amp;gt;&amp;gt; lru_list; typedef std::unordered_map&amp;lt;Key, typename lru_list::iterator&amp;gt; lru_map; private: lru_list lru_list_; lru_map lru_map_; size_t lru_capacity_ = 1; std::mutex lru_lock_; public: int Get(const Key &amp;amp;key, Value &amp;amp;value) { std::lock_guard&amp;lt;std::mutex&amp;gt; lock(lru_lock_); typename lru_map::iterator lru_map_it = lru_map_.find(key); if (lru_map_it == lru_map_.end()) return -ESRCH; std::pair&amp;lt;Key, Value&amp;gt; lru_element = *(lru_map_it-&amp;gt;second); value = lru_element." />
   <meta property="og:locale" content="en-us" />
@@ -108,7 +108,7 @@
 
         </div>
         <header class="post-header">
-          <h1 class="post-title">LRU算法的C&#43;&#43;实现</h1>
+          <h1 class="post-title">LRU 算法的 C&#43;&#43; 实现</h1>
           
           <div class="row post-desc">
             <div class="col-xs-6">
@@ -128,7 +128,7 @@
         <div class="post-content markdown-body">
           
           <h2 id="leetcode版本">LeetCode版本</h2>
-<p>如果只是刷 LeetCode 的话,可以看看我<a href="https://wiki.armix.cc/zh/leetcode/lru-cache">以前写的版本</a>.这个能过 LeetCode ,但是实际上存在严重的代码问题,使用了被 move 的元素.</p>
+<p>如果只是刷 LeetCode 的话,可以看看我<a href="https://wiki.armix.cc/zh/leetcode/lru-cache">以前写的版本</a>.这个能过 LeetCode, 但是实际上存在严重的代码问题,使用了被 move 的元素.</p>
 <h2 id="实用版本">实用版本</h2>
 <p>这个版本解决了上面的问题,同时用模板让元素类型可以自定义.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;list&gt;</span><span style="color:#75715e">
