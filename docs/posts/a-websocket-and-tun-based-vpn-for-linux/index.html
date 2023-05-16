@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-us" prefix="og: http://ogp.me/ns#">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="Hugo 0.111.3">
@@ -7,8 +7,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="author" content="" />
-  <meta property="og:url" content="https://lanthora.github.io/" />
-  <link rel="canonical" href="https://lanthora.github.io/" /><link rel="alternate" type="application/atom+xml" href="https://lanthora.github.ioindex.xml" title="LANTHORA">
+  <meta property="og:url" content="https://lanthora.github.io/posts/a-websocket-and-tun-based-vpn-for-linux/" />
+  <link rel="canonical" href="https://lanthora.github.io/posts/a-websocket-and-tun-based-vpn-for-linux/" /><link rel="alternate" type="application/atom+xml" href="https://lanthora.github.ioindex.xml" title="LANTHORA">
 
   <script type="application/ld+json">
   {
@@ -18,10 +18,10 @@
            "@type": "WebPage",
            "@id": "https:\/\/lanthora.github.io"
       },
-      "articleSection" : "",
-      "name" : "LANTHORA",
-      "headline" : "LANTHORA",
-      "description" : "",
+      "articleSection" : "posts",
+      "name" : "基于 WebSocket 和 TUN 的 VPN",
+      "headline" : "基于 WebSocket 和 TUN 的 VPN",
+      "description" : "背景 我在香港有一台低配的 VPS,磁盘和内存捉襟见肘,但到大陆的延迟很低,且有一个公网 IP. 同时,我家里有几台资源相对充足的家庭服务器,上面运行着很多服务,但这些服务却没法直接被外界访问. 这是一个很朴素的想法自然而然就会出现:能不能让 VPS 仅进行流量转发,请求的实际处理过程在家庭服务器上完成.\n如果能实现上面的需求,就可以通过相对低廉的成本,组建出能对外提供复杂服务的系统.\n这种实现方案相比于使用高配置云服务器有一些额外的优势:\n不会因为高昂的迁移成本而被云服务供应商绑架 数据无法轻易的被云服务供应商窃取 在过去很长的一段时间里,使用 WireGuard 组网,在 VPS 上运行 NGINX,并将流量通过 WireGuard 转发到家庭服务器上. 这种美好的生活随着某次会议的召开戛然而止.原本我曾幻想着,当这一切结束后会恢复从前的模样,事实上我被狠狠的上了一课.\n需求 于是决定开发一款满足自己需求的 VPN.\n它需要:\n能够通过防火墙.这是核心需求,使用 TLS \u002b WebSocket, 让这套工具几乎没有自己的特征 简单的配置方法. WireGuard 在网络中新增一台设备需要生成密钥并同时修改两端的配置,对我来说过于复杂,我想要在任意一台 Linux 设备上执行一行命令就能成功组网 极少的资源消耗.因为场景特殊,需要运行在资源匮乏的 VPS 上,就必须尽可能的节约资源 它不需要:\n支持 Windows 和 MacOS.在使用 WireGuard 时,网络中只有 Linux 设备,所以只需要实现对 Linux 的支持 复杂的权限控制.只需要通过密码认证就可以接入网络,不需要在网页中删除客户端或信任客户端 实现 Talk is cheap. Show you the code.\n这里有必要对项目名 \u0026ldquo;糖果\u0026rdquo; 做一个简单的说明: 当发现我原本的方案不能用,而不得不去自己实现一套 VPN 时,想到了万圣节小孩子说的 \u0026ldquo;不给糖就捣蛋\u0026rdquo;,最终名称发展成了 \u0026ldquo;candy\u0026rdquo;.\n使用案例 开发成功后,理所应当的替换 WireGuard, 成功恢复网络服务.",
       "inLanguage" : "en-US",
       "author" : "",
       "creator" : "",
@@ -31,15 +31,33 @@
       "copyrightYear" : "2023",
       "datePublished": "2023-05-16 20:36:11 \u002b0800 CST",
       "dateModified" : "2023-05-16 20:36:11 \u002b0800 CST",
-      "url" : "https:\/\/lanthora.github.io\/",
+      "url" : "https:\/\/lanthora.github.io\/posts\/a-websocket-and-tun-based-vpn-for-linux\/",
       "keywords" : [  ]
   }
 </script>
-<title>LANTHORA</title>
-  <meta property="og:title" content="LANTHORA" />
-  <meta property="og:type" content="website" />
-  <meta property="og:description" content="" />
-  <meta name="description" content="" />
+<title>基于 WebSocket 和 TUN 的 VPN</title>
+  <meta property="og:title" content="基于 WebSocket 和 TUN 的 VPN" />
+  <meta property="og:type" content="article" />
+  <meta property="og:description" content="背景 我在香港有一台低配的 VPS,磁盘和内存捉襟见肘,但到大陆的延迟很低,且有一个公网 IP. 同时,我家里有几台资源相对充足的家庭服务器,上面运行着很多服务,但这些服务却没法直接被外界访问. 这是一个很朴素的想法自然而然就会出现:能不能让 VPS 仅进行流量转发,请求的实际处理过程在家庭服务器上完成.
+如果能实现上面的需求,就可以通过相对低廉的成本,组建出能对外提供复杂服务的系统.
+这种实现方案相比于使用高配置云服务器有一些额外的优势:
+不会因为高昂的迁移成本而被云服务供应商绑架 数据无法轻易的被云服务供应商窃取 在过去很长的一段时间里,使用 WireGuard 组网,在 VPS 上运行 NGINX,并将流量通过 WireGuard 转发到家庭服务器上. 这种美好的生活随着某次会议的召开戛然而止.原本我曾幻想着,当这一切结束后会恢复从前的模样,事实上我被狠狠的上了一课.
+需求 于是决定开发一款满足自己需求的 VPN.
+它需要:
+能够通过防火墙.这是核心需求,使用 TLS &#43; WebSocket, 让这套工具几乎没有自己的特征 简单的配置方法. WireGuard 在网络中新增一台设备需要生成密钥并同时修改两端的配置,对我来说过于复杂,我想要在任意一台 Linux 设备上执行一行命令就能成功组网 极少的资源消耗.因为场景特殊,需要运行在资源匮乏的 VPS 上,就必须尽可能的节约资源 它不需要:
+支持 Windows 和 MacOS.在使用 WireGuard 时,网络中只有 Linux 设备,所以只需要实现对 Linux 的支持 复杂的权限控制.只需要通过密码认证就可以接入网络,不需要在网页中删除客户端或信任客户端 实现 Talk is cheap. Show you the code.
+这里有必要对项目名 &amp;ldquo;糖果&amp;rdquo; 做一个简单的说明: 当发现我原本的方案不能用,而不得不去自己实现一套 VPN 时,想到了万圣节小孩子说的 &amp;ldquo;不给糖就捣蛋&amp;rdquo;,最终名称发展成了 &amp;ldquo;candy&amp;rdquo;.
+使用案例 开发成功后,理所应当的替换 WireGuard, 成功恢复网络服务." />
+  <meta name="description" content="背景 我在香港有一台低配的 VPS,磁盘和内存捉襟见肘,但到大陆的延迟很低,且有一个公网 IP. 同时,我家里有几台资源相对充足的家庭服务器,上面运行着很多服务,但这些服务却没法直接被外界访问. 这是一个很朴素的想法自然而然就会出现:能不能让 VPS 仅进行流量转发,请求的实际处理过程在家庭服务器上完成.
+如果能实现上面的需求,就可以通过相对低廉的成本,组建出能对外提供复杂服务的系统.
+这种实现方案相比于使用高配置云服务器有一些额外的优势:
+不会因为高昂的迁移成本而被云服务供应商绑架 数据无法轻易的被云服务供应商窃取 在过去很长的一段时间里,使用 WireGuard 组网,在 VPS 上运行 NGINX,并将流量通过 WireGuard 转发到家庭服务器上. 这种美好的生活随着某次会议的召开戛然而止.原本我曾幻想着,当这一切结束后会恢复从前的模样,事实上我被狠狠的上了一课.
+需求 于是决定开发一款满足自己需求的 VPN.
+它需要:
+能够通过防火墙.这是核心需求,使用 TLS &#43; WebSocket, 让这套工具几乎没有自己的特征 简单的配置方法. WireGuard 在网络中新增一台设备需要生成密钥并同时修改两端的配置,对我来说过于复杂,我想要在任意一台 Linux 设备上执行一行命令就能成功组网 极少的资源消耗.因为场景特殊,需要运行在资源匮乏的 VPS 上,就必须尽可能的节约资源 它不需要:
+支持 Windows 和 MacOS.在使用 WireGuard 时,网络中只有 Linux 设备,所以只需要实现对 Linux 的支持 复杂的权限控制.只需要通过密码认证就可以接入网络,不需要在网页中删除客户端或信任客户端 实现 Talk is cheap. Show you the code.
+这里有必要对项目名 &amp;ldquo;糖果&amp;rdquo; 做一个简单的说明: 当发现我原本的方案不能用,而不得不去自己实现一套 VPN 时,想到了万圣节小孩子说的 &amp;ldquo;不给糖就捣蛋&amp;rdquo;,最终名称发展成了 &amp;ldquo;candy&amp;rdquo;.
+使用案例 开发成功后,理所应当的替换 WireGuard, 成功恢复网络服务." />
   <meta property="og:locale" content="en-us" />
 
   
@@ -65,10 +83,11 @@
 
 
 <body>
-  <article class="posts">
+  <article class="post " id="article">
     <div class="row">
       <div class="col-xs-12">
-        
+        <div class="site-header">
+          
 <header>
   <div class="header-title">
     <a href="/"
@@ -101,164 +120,83 @@
 </div>
 <div class="header-line"></div>
 
-        <div id="posts-list">
-          <section>
-            <h1 class="site-date-catalog">2023</h1>
-
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-3 col-sm-2">
-                <time datetime="2023-05-16 20:36:11 CST">May 16</time>
-              </div>
-              <div class="posts-title col-xs-9 col-sm-10">
-                <div class="row">
-                  <div class="col-xs-11 col-sm-10">
-                    <a href="/posts/a-websocket-and-tun-based-vpn-for-linux/">基于 WebSocket 和 TUN 的 VPN</a>
-                  </div>
-                  <div class="col-xs-1 col-sm-2 posts-categories">
-                    
-                    <div class="posts-category">
-                      <a href="/categories/%e8%ae%a1%e7%ae%97%e6%9c%ba%e7%bd%91%e7%bb%9c/"><strong>计算机网络</strong></a>
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-          </section>
-          <section>
-            <h1 class="site-date-catalog">2022</h1>
-
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-3 col-sm-2">
-                <time datetime="2022-09-20 22:03:16 CST">Sep 20</time>
-              </div>
-              <div class="posts-title col-xs-9 col-sm-10">
-                <div class="row">
-                  <div class="col-xs-11 col-sm-10">
-                    <a href="/posts/hackernel-host-intrusion-detection-and-prevention-system/">主机入侵检测与防御系统</a>
-                  </div>
-                  <div class="col-xs-1 col-sm-2 posts-categories">
-                    
-                    <div class="posts-category">
-                      <a href="/categories/%e6%93%8d%e4%bd%9c%e7%b3%bb%e7%bb%9f/"><strong>操作系统</strong></a>
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-3 col-sm-2">
-                <time datetime="2022-02-28 15:06:59 CST">Feb 28</time>
-              </div>
-              <div class="posts-title col-xs-9 col-sm-10">
-                <div class="row">
-                  <div class="col-xs-11 col-sm-10">
-                    <a href="/posts/code-of-conduct/">我的行为准则</a>
-                  </div>
-                  <div class="col-xs-1 col-sm-2 posts-categories">
-                    
-                    <div class="posts-category">
-                      <a href="/categories/%e6%9c%aa%e5%88%86%e7%b1%bb/"><strong>未分类</strong></a>
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-3 col-sm-2">
-                <time datetime="2022-01-03 19:06:57 CST">Jan 03</time>
-              </div>
-              <div class="posts-title col-xs-9 col-sm-10">
-                <div class="row">
-                  <div class="col-xs-11 col-sm-10">
-                    <a href="/posts/lru-template-cpp/">LRU 算法的 C&#43;&#43; 实现</a>
-                  </div>
-                  <div class="col-xs-1 col-sm-2 posts-categories">
-                    
-                    <div class="posts-category">
-                      <a href="/categories/%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84/"><strong>数据结构</strong></a>
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-          </section>
-          <section>
-            <h1 class="site-date-catalog">2021</h1>
-
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-3 col-sm-2">
-                <time datetime="2021-10-17 10:12:10 CST">Oct 17</time>
-              </div>
-              <div class="posts-title col-xs-9 col-sm-10">
-                <div class="row">
-                  <div class="col-xs-11 col-sm-10">
-                    <a href="/posts/disable-kernel-memory-write-protection/">关闭内核内存写保护</a>
-                  </div>
-                  <div class="col-xs-1 col-sm-2 posts-categories">
-                    
-                    <div class="posts-category">
-                      <a href="/categories/%e6%93%8d%e4%bd%9c%e7%b3%bb%e7%bb%9f/"><strong>操作系统</strong></a>
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-3 col-sm-2">
-                <time datetime="2021-09-29 21:42:32 CST">Sep 29</time>
-              </div>
-              <div class="posts-title col-xs-9 col-sm-10">
-                <div class="row">
-                  <div class="col-xs-11 col-sm-10">
-                    <a href="/posts/namespace-netfilter-hook-point/">命名空间对 netfilter 的影响</a>
-                  </div>
-                  <div class="col-xs-1 col-sm-2 posts-categories">
-                    
-                    <div class="posts-category">
-                      <a href="/categories/%e6%93%8d%e4%bd%9c%e7%b3%bb%e7%bb%9f/"><strong>操作系统</strong></a>
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row posts-line">
-              <div class="posts-date col-xs-3 col-sm-2">
-                <time datetime="2021-09-25 14:17:08 CST">Sep 25</time>
-              </div>
-              <div class="posts-title col-xs-9 col-sm-10">
-                <div class="row">
-                  <div class="col-xs-11 col-sm-10">
-                    <a href="/posts/init/">Hugo 的第一篇文章</a>
-                  </div>
-                  <div class="col-xs-1 col-sm-2 posts-categories">
-                    
-                    <div class="posts-category">
-                      <a href="/categories/%e6%9d%82%e8%b0%88/"><strong>杂谈</strong></a>
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-          </section>
-          
         </div>
+        <header class="post-header">
+          <h1 class="post-title">基于 WebSocket 和 TUN 的 VPN</h1>
+          
+          <div class="row post-desc">
+            <div class="col-xs-6">
+              
+              <time class="post-date" datetime="2023-05-16 20:36:11 CST">
+                16 May 2023
+              </time>
+              
+            </div>
+            <div class="col-xs-6">
+              
+            </div>
+          </div>
+          
+        </header>
+
+        <div class="post-content markdown-body">
+          
+          <h2 id="背景">背景</h2>
+<p>我在香港有一台低配的 VPS,磁盘和内存捉襟见肘,但到大陆的延迟很低,且有一个公网 IP.
+同时,我家里有几台资源相对充足的家庭服务器,上面运行着很多服务,但这些服务却没法直接被外界访问.
+这是一个很朴素的想法自然而然就会出现:能不能让 VPS 仅进行流量转发,请求的实际处理过程在家庭服务器上完成.</p>
+<p>如果能实现上面的需求,就可以通过相对低廉的成本,组建出能对外提供复杂服务的系统.</p>
+<p>这种实现方案相比于使用高配置云服务器有一些额外的优势:</p>
+<ol>
+<li>不会因为高昂的迁移成本而被云服务供应商绑架</li>
+<li>数据无法轻易的被云服务供应商窃取</li>
+</ol>
+<p>在过去很长的一段时间里,使用 WireGuard 组网,在 VPS 上运行 NGINX,并将流量通过 WireGuard 转发到家庭服务器上.
+这种美好的生活随着某次会议的召开戛然而止.原本我曾幻想着,当这一切结束后会恢复从前的模样,事实上我被狠狠的上了一课.</p>
+<h2 id="需求">需求</h2>
+<p>于是决定开发一款满足自己需求的 VPN.</p>
+<p>它需要:</p>
+<ol>
+<li>能够通过防火墙.这是核心需求,使用 TLS + WebSocket, 让这套工具几乎没有自己的特征</li>
+<li>简单的配置方法. WireGuard 在网络中新增一台设备需要生成密钥并同时修改两端的配置,对我来说过于复杂,我想要在任意一台 Linux 设备上执行一行命令就能成功组网</li>
+<li>极少的资源消耗.因为场景特殊,需要运行在资源匮乏的 VPS 上,就必须尽可能的节约资源</li>
+</ol>
+<p>它不需要:</p>
+<ol>
+<li>支持 Windows 和 MacOS.在使用 WireGuard 时,网络中只有 Linux 设备,所以只需要实现对 Linux 的支持</li>
+<li>复杂的权限控制.只需要通过密码认证就可以接入网络,不需要在网页中删除客户端或信任客户端</li>
+</ol>
+<h2 id="实现">实现</h2>
+<p>Talk is cheap. Show you <a href="https://github.com/lanthora/candy">the code</a>.</p>
+<p>这里有必要对项目名 &ldquo;糖果&rdquo; 做一个简单的说明: 当发现我原本的方案不能用,而不得不去自己实现一套 VPN 时,想到了万圣节小孩子说的 &ldquo;不给糖就捣蛋&rdquo;,最终名称发展成了 &ldquo;candy&rdquo;.</p>
+<h2 id="使用案例">使用案例</h2>
+<p>开发成功后,理所应当的替换 WireGuard, 成功恢复网络服务.</p>
+<p>这套东西的部署方式如此的简单,以至于我把他安装在了所有常用的 Linux 上.</p>
+<p>在公司的笔记本虚拟机上部署这套软件和 <a href="https://www.inet.no/dante/">dante</a> 后,成功解决了无法在 Linux 上远程访问公司内网的问题.</p>
+
+        </div>
+
+        <div class="row middle-xs">
+          <div class="col-xs-12">
+            
+          </div>
+        </div>
+        
+          <div class="row">
+            <div class="col-xs-12">
+              
+            </div>
+          </div>
+
+          
+
+
+
+          
+          
+          <div style="height: 50px;"></div>
+          
+        
 
         <div class="site-footer">
   
@@ -278,6 +216,8 @@
     
   
 </script>
+
+  
 
 </body>
 

@@ -7,16 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>CC BY 4.0</copyright>
-    <lastBuildDate>Sun, 13 Feb 2022 10:02:24 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 16 May 2023 20:36:11 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>TCP拥塞控制中的无领导合作</title>
-      <link>https://lanthora.github.io/posts/leaderless-cooperation-in-tcp-congestion-control/</link>
-      <pubDate>Sun, 13 Feb 2022 10:02:24 +0800</pubDate>
+      <title>基于 WebSocket 和 TUN 的 VPN</title>
+      <link>https://lanthora.github.io/posts/a-websocket-and-tun-based-vpn-for-linux/</link>
+      <pubDate>Tue, 16 May 2023 20:36:11 +0800</pubDate>
       
-      <guid>https://lanthora.github.io/posts/leaderless-cooperation-in-tcp-congestion-control/</guid>
-      <description>在 没有实时领导的情况下,各部分追求个人最优解,导致集体分化,形成无效竞争. 是否存在一种方式,能让 部分之间协调配合,达到集体最优解.
-TCP拥塞控制为我们寻找这个问题的解决方法提供了一个思路。
-TODO: 补充后续内容,今天先出去玩</description>
+      <guid>https://lanthora.github.io/posts/a-websocket-and-tun-based-vpn-for-linux/</guid>
+      <description>背景 我在香港有一台低配的 VPS,磁盘和内存捉襟见肘,但到大陆的延迟很低,且有一个公网 IP. 同时,我家里有几台资源相对充足的家庭服务器,上面运行着很多服务,但这些服务却没法直接被外界访问. 这是一个很朴素的想法自然而然就会出现:能不能让 VPS 仅进行流量转发,请求的实际处理过程在家庭服务器上完成.
+如果能实现上面的需求,就可以通过相对低廉的成本,组建出能对外提供复杂服务的系统.
+这种实现方案相比于使用高配置云服务器有一些额外的优势:
+不会因为高昂的迁移成本而被云服务供应商绑架 数据无法轻易的被云服务供应商窃取 在过去很长的一段时间里,使用 WireGuard 组网,在 VPS 上运行 NGINX,并将流量通过 WireGuard 转发到家庭服务器上. 这种美好的生活随着某次会议的召开戛然而止.原本我曾幻想着,当这一切结束后会恢复从前的模样,事实上我被狠狠的上了一课.
+需求 于是决定开发一款满足自己需求的 VPN.
+它需要:
+能够通过防火墙.这是核心需求,使用 TLS + WebSocket, 让这套工具几乎没有自己的特征 简单的配置方法. WireGuard 在网络中新增一台设备需要生成密钥并同时修改两端的配置,对我来说过于复杂,我想要在任意一台 Linux 设备上执行一行命令就能成功组网 极少的资源消耗.因为场景特殊,需要运行在资源匮乏的 VPS 上,就必须尽可能的节约资源 它不需要:
+支持 Windows 和 MacOS.在使用 WireGuard 时,网络中只有 Linux 设备,所以只需要实现对 Linux 的支持 复杂的权限控制.只需要通过密码认证就可以接入网络,不需要在网页中删除客户端或信任客户端 实现 Talk is cheap. Show you the code.
+这里有必要对项目名 &amp;ldquo;糖果&amp;rdquo; 做一个简单的说明: 当发现我原本的方案不能用,而不得不去自己实现一套 VPN 时,想到了万圣节小孩子说的 &amp;ldquo;不给糖就捣蛋&amp;rdquo;,最终名称发展成了 &amp;ldquo;candy&amp;rdquo;.
+使用案例 开发成功后,理所应当的替换 WireGuard, 成功恢复网络服务.</description>
     </item>
     
   </channel>
