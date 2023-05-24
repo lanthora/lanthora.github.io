@@ -21,9 +21,9 @@
 需求 于是决定开发一款满足自己需求的 VPN.
 它需要:
 能够通过防火墙.这是核心需求,使用 TLS + WebSocket, 让这套工具几乎没有自己的特征 简单的配置方法. WireGuard 在网络中新增一台设备需要生成密钥并同时修改两端的配置,对我来说过于复杂,我想要在任意一台 Linux 设备上执行一行命令就能成功组网 极少的资源消耗.因为场景特殊,需要运行在资源匮乏的 VPS 上,就必须尽可能的节约资源 它不需要:
-支持 Windows 和 MacOS.在使用 WireGuard 时,网络中只有 Linux 设备,所以只需要实现对 Linux 的支持 复杂的权限控制.只需要通过密码认证就可以接入网络,不需要在网页中删除客户端或信任客户端 实现 Talk is cheap. Show you the code.
-这里有必要对项目名 &amp;ldquo;糖果&amp;rdquo; 做一个简单的说明: 当发现我原本的方案不能用,而不得不去自己实现一套 VPN 时,想到了万圣节小孩子说的 &amp;ldquo;不给糖就捣蛋&amp;rdquo;,最终名称发展成了 &amp;ldquo;candy&amp;rdquo;.
-使用案例 开发成功后,理所应当的替换 WireGuard, 成功恢复网络服务.</description>
+支持 Windows 和 MacOS.在使用 WireGuard 时,网络中只有 Linux 设备,所以只需要实现对 Linux 的支持 复杂的权限控制.只需要通过密码认证就可以接入网络,不需要在网页中删除客户端或信任客户端 实现原理 文章标题指出了这个项目的核心技术: 用 TUN 设备处理本地三层协议的数据包,通过 WebSocket 协议将对外的数据发送给服务端进行路由转发.对端接收到数据包后转发给 TUN 设备.在此基础之上,添加一套简单却有效的鉴权系统.
+Talk is cheap. Show you the code.
+这里有必要对项目名 &amp;ldquo;糖果&amp;rdquo; 做一个简单的说明: 当发现我原本的方案不能用,而不得不去自己实现一套 VPN 时,想到了万圣节小孩子说的 &amp;ldquo;不给糖就捣蛋&amp;rdquo;,最终名称发展成了 &amp;ldquo;candy&amp;rdquo;.</description>
     </item>
     
   </channel>

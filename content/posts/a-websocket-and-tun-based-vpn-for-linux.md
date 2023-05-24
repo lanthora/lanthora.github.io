@@ -36,16 +36,36 @@ draft: false
 1. 支持 Windows 和 MacOS.在使用 WireGuard 时,网络中只有 Linux 设备,所以只需要实现对 Linux 的支持
 2. 复杂的权限控制.只需要通过密码认证就可以接入网络,不需要在网页中删除客户端或信任客户端
 
-## 实现
+## 实现原理
+
+文章标题指出了这个项目的核心技术: 用 TUN 设备处理本地三层协议的数据包,通过 WebSocket 协议将对外的数据发送给服务端进行路由转发.对端接收到数据包后转发给 TUN 设备.在此基础之上,添加一套简单却有效的鉴权系统.
 
 Talk is cheap. Show you [the code](https://github.com/lanthora/candy).
 
 这里有必要对项目名 "糖果" 做一个简单的说明: 当发现我原本的方案不能用,而不得不去自己实现一套 VPN 时,想到了万圣节小孩子说的 "不给糖就捣蛋",最终名称发展成了 "candy".
 
+## 快速体验
+
+```bash
+# 获取 docker-compose.yml 和 candy.conf
+git clone https://github.com/lanthora/candy.git
+
+# 启动服务
+docker compose up -d
+```
+
+如果到此为止没有任何报错,那么你已经成功加入了测试网络.
+
+```bash
+# 查看虚拟网卡 candy-demo
+ip address show dev candy-demo
+
+# Ping 测试网络中的其他设备
+ping 172.16.0.1
+```
+
+浏览器访问 `http://172.16.0.1:80` 可以访问到先前博客里介绍的 [主机入侵检测与防御系统](/posts/hackernel-host-intrusion-detection-and-prevention-system/).
+
 ## 使用案例
 
-开发成功后,理所应当的替换 WireGuard, 成功恢复网络服务.
-
-这套东西的部署方式如此的简单,以至于我把他安装在了所有常用的 Linux 上.
-
-在公司的笔记本虚拟机上部署这套软件和 [dante](https://www.inet.no/dante/) 后,成功解决了无法在 Linux 上远程访问公司内网的问题.
+开发成功后,理所应当的替换 WireGuard, 成功恢复网络服务.这套东西的部署方式如此的简单,以至于我把他安装在了所有常用的 Linux 上.在内网环境部署 [SOCKS5](https://www.inet.no/dante/) 服务后,成功解决无法在 Linux 上访问内网的问题.
