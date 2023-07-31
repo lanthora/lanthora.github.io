@@ -18,7 +18,7 @@ draft: false
 1. 不会因为高昂的迁移成本而被云服务供应商绑架
 2. 数据无法轻易的被云服务供应商窃取
 
-在过去很长的一段时间里,使用 WireGuard 组网,在 VPS 上运行 NGINX,并将流量通过 WireGuard 转发到家庭服务器上.
+在过去很长的一段时间里,使用 WireGuard 组网,在 VPS 上运行 NGINX, 并将流量通过 WireGuard 转发到家庭服务器上.
 这种美好的生活随着某次会议的召开戛然而止.原本我曾幻想着,当这一切结束后会恢复从前的模样,事实上我被狠狠的上了一课.
 
 ## 需求
@@ -47,25 +47,26 @@ Talk is cheap. Show you [the code](https://github.com/lanthora/candy).
 ## 快速体验
 
 ```bash
-# 获取 docker-compose.yml 和 candy.conf
-git clone https://github.com/lanthora/candy.git
-
 # 启动服务
-docker compose up -d
+docker run --rm --privileged=true --net=host --device /dev/net/tun --volume /var/lib/candy:/var/lib/candy lanthora/candy
+
+# 查看虚拟网卡 candy,可以看到已经分配 IP 的地址
+ip address show dev candy
 ```
 
-如果到此为止没有任何报错,那么你已经成功加入了测试网络.
+到此为止如果一切正常,那么你已经成功加入了测试网络.如果没有分配 IP,需要确认系统时间是否准确.
 
-```bash
-# 查看虚拟网卡 candy-demo
-ip address show dev candy-demo
 
-# Ping 测试网络中的其他设备
-ping 172.16.0.1
-```
+## 案例
 
-浏览器访问 `http://172.16.0.1:80` 可以访问到先前博客里介绍的 [主机入侵检测与防御系统](/posts/hackernel-host-intrusion-detection-and-prevention-system/).
+### 多台服务器间组网
 
-## 使用案例
+开发完成后,理所应当的替换 WireGuard, 成功恢复了因为开会而中断的网络服务.
 
-开发成功后,理所应当的替换 WireGuard, 成功恢复网络服务.这套东西的部署方式如此的简单,以至于我把他安装在了所有常用的 Linux 上.在内网环境部署 [SOCKS5](https://www.inet.no/dante/) 服务后,成功解决无法在 Linux 上访问内网的问题.
+### 部署代理访问内网设备
+
+这套东西的部署方式如此的简单,以至于我把他安装在了所有常用的 Linux 上.在老家的树莓派上部署 [SOCKS5](https://www.inet.no/dante/) 后,可以轻松的访问家里的网络,帮助父母解决网络问题.
+
+### 解决 Splatoon 3 掉线问题
+
+游戏除了透明代理 TCP, 还需要透明代理 UDP. 以前的透明代理方案是 ss-reidr, 不知道是运营商的问题还是防火墙的问题,游戏匹配经常失败.把 ss 套在 VPN 里面后,就可以畅快的玩耍了.
