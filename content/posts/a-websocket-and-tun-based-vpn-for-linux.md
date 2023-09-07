@@ -47,15 +47,16 @@ Talk is cheap. Show you [the code](https://github.com/lanthora/candy).
 ## 快速体验
 
 ```bash
-# 启动服务
-docker run --rm --privileged=true --net=host --device /dev/net/tun --volume /var/lib/candy:/var/lib/candy lanthora/candy
+# 更新镜像并启动服务
+sudo podman pull docker.io/lanthora/candy:latest
+sudo podman run --rm --privileged=true --net=host --device /dev/net/tun docker.io/lanthora/candy:latest
 
 # 查看虚拟网卡 candy,可以看到已经分配 IP 的地址
 ip address show dev candy
+
+# 检查网络是否连通,如果时延降低,说明成功建立了 P2P 连接
+ping 172.16.0.1
 ```
-
-到此为止如果一切正常,那么你已经成功加入了测试网络.如果没有分配 IP,需要确认系统时间是否准确.
-
 
 ## 案例
 
