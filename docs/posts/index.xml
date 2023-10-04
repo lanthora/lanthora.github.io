@@ -9,21 +9,20 @@
     <copyright>CC BY 4.0</copyright>
     <lastBuildDate>Tue, 16 May 2023 20:36:11 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>基于 WebSocket 和 TUN 的 VPN</title>
-      <link>https://lanthora.github.io/posts/a-websocket-and-tun-based-vpn-for-linux/</link>
+      <title>介绍一款新的虚拟专用网络工具</title>
+      <link>https://lanthora.github.io/posts/introducing-a-new-virtual-private-network-tool/</link>
       <pubDate>Tue, 16 May 2023 20:36:11 +0800</pubDate>
       
-      <guid>https://lanthora.github.io/posts/a-websocket-and-tun-based-vpn-for-linux/</guid>
-      <description>背景 我在香港有一台低配的 VPS,磁盘和内存捉襟见肘,但到大陆的延迟很低,且有一个公网 IP. 同时,我家里有几台资源相对充足的家庭服务器,上面运行着很多服务,但这些服务却没法直接被外界访问. 这是一个很朴素的想法自然而然就会出现:能不能让 VPS 仅进行流量转发,请求的实际处理过程在家庭服务器上完成.
-如果能实现上面的需求,就可以通过相对低廉的成本,组建出能对外提供复杂服务的系统.
-这种实现方案相比于使用高配置云服务器有一些额外的优势:
-不会因为高昂的迁移成本而被云服务供应商绑架 数据无法轻易的被云服务供应商窃取 在过去很长的一段时间里,使用 WireGuard 组网,在 VPS 上运行 NGINX, 并将流量通过 WireGuard 转发到家庭服务器上. 这种美好的生活随着某次会议的召开戛然而止.原本我曾幻想着,当这一切结束后会恢复从前的模样,事实上我被狠狠的上了一课.
-需求 于是决定开发一款满足自己需求的 VPN.
-它需要:
-能够通过防火墙.这是核心需求,使用 TLS + WebSocket, 让这套工具几乎没有自己的特征 简单的配置方法. WireGuard 在网络中新增一台设备需要生成密钥并同时修改两端的配置,对我来说过于复杂,我想要在任意一台 Linux 设备上执行一行命令就能成功组网 极少的资源消耗.因为场景特殊,需要运行在资源匮乏的 VPS 上,就必须尽可能的节约资源 它不需要:
-支持 Windows 和 MacOS.在使用 WireGuard 时,网络中只有 Linux 设备,所以只需要实现对 Linux 的支持 复杂的权限控制.只需要通过密码认证就可以接入网络,不需要在网页中删除客户端或信任客户端 实现原理 文章标题指出了这个项目的核心技术: 用 TUN 设备处理本地三层协议的数据包,通过 WebSocket 协议将对外的数据发送给服务端进行路由转发.对端接收到数据包后转发给 TUN 设备.在此基础之上,添加一套简单却有效的鉴权系统.
-Talk is cheap. Show you the code.
-这里有必要对项目名 &amp;ldquo;糖果&amp;rdquo; 做一个简单的说明: 当发现我原本的方案不能用,而不得不去自己实现一套 VPN 时,想到了万圣节小孩子说的 &amp;ldquo;不给糖就捣蛋&amp;rdquo;,最终名称发展成了 &amp;ldquo;candy&amp;rdquo;.</description>
+      <guid>https://lanthora.github.io/posts/introducing-a-new-virtual-private-network-tool/</guid>
+      <description>什么是虚拟专用网络 互联网上存在大量命名为 VPN (虚拟专用网络)的代理工具,严格意义上来说这些工具应该被称为 Proxy (代理). 这里需要澄清一下它们的区别: VPN 可以让虚拟网络中的设备相互访问; Proxy 则是把一台设备作为跳板访问另一台设备.
+典型的 VPN 有 OpenVPN 和 IPSec, 以及最近几年出现的 WireGuard. 典型的 Proxy 有 Socks5, ShadowSocks, V2Ray. 而 VPN 添加路由和转发配置后,可以实现 Proxy 的效果.这大概就是两个概念混淆的原因吧.
+显然这篇文章介绍的是一款组网工具,而非翻墙工具.
+为什么再实现一款虚拟专用网络工具 上面已经提到许多经典的 VPN, 它们能满足用户的绝大多数场景. 我曾是 WireGuard 用户,但在国内众所周知的网络环境下,它们的设计存在明显的“缺陷”,即明显的协议特征. 这原本不是 VPN 需要考虑的问题,但当流量通过防火墙时,存在被丢包的风险. 我就是在 WireGuard 被丢包后才决定实现一款不容易被防火墙探测的 VPN.
+在此之前,还尝试过我认为很复杂扭曲的方案: 使用可靠的代理转发流量,并在代理之上组网.
+还得添加一些新特性 除了解决被防火墙探测的问题,还需要引入一些更方便高效实用的新特性.
+降低配置复杂度 WireGuard 相对来说已经是 VPN 里配置比较简单的了,但依旧需要手动在服务端和客户端配置对方的公钥.能理解这是为了安全所采取的措施,但对我来说依旧过于复杂. WireGuard 需要强制指定虚拟地址,不适用于想要灵活接入多个客户端并动态分配地址的场景.用预共享密钥代替非对称加密,可以解决前面提到的问题,同时还降低了配置复杂度.
+高效的断线重连 在某些情况下 WireGuard 会断线,只有重启客户端才能解决.此时对于一个无人值守的设备来说,就意味着彻底失联.为了解决这个问题,我给设备配置了每天重启一次,这显然是一种很丑陋的解决方案.自行实现就可以很容易加上心跳,并在收不到心跳时及时做出响应.
+穿透 NAT 建立对等连接 在不考虑配置复杂度的情况下,虽然 WireGuard 也支持对等连接,但对于连接双方都在 NAT 后面的情况却无能为力.当能穿透 NAT 时,就可以节约服务端转发的流量,同时还能降低通信延迟.</description>
     </item>
     
     <item>
