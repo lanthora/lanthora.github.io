@@ -176,7 +176,7 @@
 <h2 id="实际体验一下效果">实际体验一下效果</h2>
 <p>我们有一个每天同步一次最新镜像的测试环境.镜像的默认配置会在启动时作为客户端连接到这个测试环境.虚拟网络的地址范围是 172.16.0.0/16, 你的客户端会被随机分配一个地址,请确保没有地址冲突.</p>
 <p>执行这条命令就可以接入测试环境.示例通过 docker 管理容器,你可以选择任何你熟悉的容器管理工具.在项目根目录可以找到 kubernetes 的 daemonset 配置文件和 docker compose 文件.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run --rm --privileged<span style="color:#f92672">=</span>true --net<span style="color:#f92672">=</span>host --device /dev/net/tun docker.io/lanthora/candy:latest
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run --rm --privileged<span style="color:#f92672">=</span>true --net<span style="color:#f92672">=</span>host docker.io/lanthora/candy:latest
 </span></span></code></pre></div><p>这个网络部署了两台用于测试的设备. 172.16.0.1 用于测试对等连接,这台设备部署在北京,而服务端部署在纽约.如果你在中国大陆,到这台设备的延迟能轻易的判断出来是直连还是服务端转发.在 172.16.0.2 的 1080 端口部署了的 socks5 服务.请注意这两个设备仅用于测试.</p>
 <p>如果你已经看到了这里,大概率对这个软件还算感兴趣,源代码托管在了 <a href="https://github.com/lanthora/candy">Github</a>,<del>暗示点星星</del>.你可以调整启动参数部署自己的服务端,然后组建自己的的虚拟专用网络.</p>
 
