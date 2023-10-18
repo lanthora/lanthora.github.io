@@ -1,7 +1,7 @@
 ---
 title: "我的行为准则"
 date: 2022-02-28T15:06:59+08:00
-categories: ["未分类"]
+categories: ["杂谈"]
 draft: false
 ---
 
