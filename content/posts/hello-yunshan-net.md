@@ -2,7 +2,7 @@
 title: "记与北京云杉世纪网络科技有限公司的劳动争议"
 date: 2023-10-17T03:17:46Z
 categories: ["杂谈"]
-draft: false
+draft: true
 ---
 
 # 背景
@@ -51,3 +51,4 @@ http://fuwu.rsj.beijing.gov.cn/bjxsfw/ldzc/zcsqyy/v2/home/arbitration/remaindArb
 ### 仲裁申请
 
 2023 年 10 月 20 日,收到仲裁预申请通过的短信通知.需要在 2023 年 10 月 23 日现场办理仲裁申请.
+立案过程非常顺利,只是很多人准备不充分,导致每个人办理过程都很慢,拖到中午才搞定.

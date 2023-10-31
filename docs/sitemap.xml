@@ -3,19 +3,13 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://lanthora.github.io/categories/</loc>
-    <lastmod>2023-10-17T03:17:46+00:00</lastmod>
+    <lastmod>2023-05-16T20:36:11+08:00</lastmod>
   </url><url>
     <loc>https://lanthora.github.io/</loc>
-    <lastmod>2023-10-17T03:17:46+00:00</lastmod>
+    <lastmod>2023-05-16T20:36:11+08:00</lastmod>
   </url><url>
     <loc>https://lanthora.github.io/posts/</loc>
-    <lastmod>2023-10-17T03:17:46+00:00</lastmod>
-  </url><url>
-    <loc>https://lanthora.github.io/categories/%E6%9D%82%E8%B0%88/</loc>
-    <lastmod>2023-10-17T03:17:46+00:00</lastmod>
-  </url><url>
-    <loc>https://lanthora.github.io/posts/hello-yunshan-net/</loc>
-    <lastmod>2023-10-17T03:17:46+00:00</lastmod>
+    <lastmod>2023-05-16T20:36:11+08:00</lastmod>
   </url><url>
     <loc>https://lanthora.github.io/posts/introducing-a-new-virtual-private-network-tool/</loc>
     <lastmod>2023-05-16T20:36:11+08:00</lastmod>
@@ -30,6 +24,9 @@
     <lastmod>2022-09-20T22:03:16+08:00</lastmod>
   </url><url>
     <loc>https://lanthora.github.io/posts/code-of-conduct/</loc>
+    <lastmod>2022-02-28T15:06:59+08:00</lastmod>
+  </url><url>
+    <loc>https://lanthora.github.io/categories/%E6%9D%82%E8%B0%88/</loc>
     <lastmod>2022-02-28T15:06:59+08:00</lastmod>
   </url><url>
     <loc>https://lanthora.github.io/posts/lru-template-cpp/</loc>

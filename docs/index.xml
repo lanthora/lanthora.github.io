@@ -7,27 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>CC BY 4.0</copyright>
-    <lastBuildDate>Tue, 17 Oct 2023 03:17:46 +0000</lastBuildDate><atom:link href="https://lanthora.github.io/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>记与北京云杉世纪网络科技有限公司的劳动争议</title>
-      <link>https://lanthora.github.io/posts/hello-yunshan-net/</link>
-      <pubDate>Tue, 17 Oct 2023 03:17:46 +0000</pubDate>
-      
-      <guid>https://lanthora.github.io/posts/hello-yunshan-net/</guid>
-      <description>背景 记录与北京云杉世纪网络科技有限公司(后面简称公司)产生的纠纷以及处理过程. 本文在描述事实的过程中掺杂大量个人主管感受,请谨慎参考.
-公司没有按照劳动合同履行按时支付劳动报酬的义务,于是根据劳动法提出被迫解除劳动合同.
-协商 应发工资的时间是周五,在周末确认没有工资到账后通过 EMS 寄出被迫解除劳动合同的通知书. 通知书需要送达才生效,而周一早上通知书还没有送达,于是去公司上班.
-这一天尝试协商解除劳动合同,协商对于我来说会省掉很多麻烦,比如写这篇文章,劳动仲裁和诉讼. 对于公司,可以相对平缓的完成工作交接,尽可能的降低对公司业务的影响. 不过通过事件的发展来看,在公司视角下,我直接离职并不会对公司产生影响,也符合我对自己的认知.
-被迫解除劳动合同通知书送达当天 与技术和 HR 团队多次沟通.与技术协商了交接时间.并与 HR 协商了离职补偿. 我提出要签订协议明确下已经协商的权利义务. HR 以需要老板确认为由表示不能当天给协议,这也是可以理解的. 后面证明我的这份仁慈是多余的,应该直接表明,在确定签协议前,不会再去公司.
-次日 由于前一天没有签任何东西,抱着对公司还残存的一点信任,去公司上班.到公司后 HR 就表明,补偿没有,只能主动离职. 显然这不是 HR 敢做出的决定,这应该是老板的指示:&amp;ldquo;补偿没有,他爱怎么办就怎么办吧.&amp;rdquo; 从这里能看出来,这个公司是由老板一言堂拍脑袋运营下来的.这样做非蠢即坏,老板一定不是傻子,所以这么做就是单纯的坏. 想通过给我制造麻烦,让我很艰难的拿到补偿,而公司没有任何损失,只是付出了它本该付出的东西.大概我也需要准备对等的反制措施吧.
-很有意思的是,公司先停用了我的办公软件,然后给我发送了公司员工手册里关于旷工的条款.很有意思的是,这些操作都是在被迫解除的通知签收后进行的.
-仲裁 仲裁预申请 在 Google 搜索关键词 &amp;ldquo;北京市劳动仲裁网上预约申请&amp;rdquo;,就会引导到以下地址.我也尝试了以下百度,搜不到这个结果.
-http://fuwu.rsj.beijing.gov.cn/bjxsfw/ldzc/zcsqyy/v2/home/arbitration/remaindArbitration
-在这个页面根据引导填写资料.建议使用 chrome, 我使用 firefox 时没有提交成功,不确定是什么原因.
-已经于 2023 年 10 月 18 日提交了预申请,等待预申请结果.应该会在 5 个工作日内得到答复.
-仲裁申请 2023 年 10 月 20 日,收到仲裁预申请通过的短信通知.需要在 2023 年 10 月 23 日现场办理仲裁申请.</description>
-    </item>
-    
+    <lastBuildDate>Tue, 16 May 2023 20:36:11 +0800</lastBuildDate><atom:link href="https://lanthora.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>介绍一款新的虚拟专用网络工具</title>
       <link>https://lanthora.github.io/posts/introducing-a-new-virtual-private-network-tool/</link>
