@@ -15,7 +15,7 @@ draft: false
 
 我们提供了一个演示环境,这套环境部署在树莓派 4B 的 Manjaro 上.如果演示环境挂了,请通过博客上提供的联系方式告诉我:
 
-- 服务器地址: https://web.hackernel.org
+- 服务器地址: https://www.hackernel.org
 - 用户名密码: test/123456
 
 ## 初衷
