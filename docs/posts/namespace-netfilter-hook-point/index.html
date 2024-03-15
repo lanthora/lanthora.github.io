@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Hugo 0.121.1">
+  <meta name="generator" content="Hugo 0.123.7">
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="author" content="" />
   <meta property="og:url" content="https://lanthora.github.io/posts/namespace-netfilter-hook-point/" />
-  <link rel="canonical" href="https://lanthora.github.io/posts/namespace-netfilter-hook-point/" /><link rel="alternate" type="application/atom+xml" href="https://lanthora.github.ioindex.xml" title="LANTHORA">
+  <link rel="canonical" href="https://lanthora.github.io/posts/namespace-netfilter-hook-point/" /><link rel="alternate" type="application/atom+xml" href="https://lanthora.github.io/index.xml" title="LANTHORA">
 
   <script type="application/ld+json">
   {
@@ -16,7 +16,7 @@
       "@type" : "BlogPosting",
       "mainEntityOfPage": {
            "@type": "WebPage",
-           "@id": "https:\/\/lanthora.github.io"
+           "@id": "https:\/\/lanthora.github.io\/"
       },
       "articleSection" : "posts",
       "name" : "命名空间对 netfilter 的影响",
@@ -143,25 +143,25 @@ struct net *net; for_each_net (net) { nf_register_net_hook(net, &amp;amp;reg) } 
 
         <div class="post-content markdown-body">
           
-          <h1 id="tldr">TL;DR</h1>
+          <h2 id="tldr">TL;DR</h2>
 <p>在 <a href="https://github.com/torvalds/linux/commit/085db2c04557d31db61541f361bd8b4de92c9939">netfilter: Per network namespace netfilter hooks</a> 后,需要指定网络命名空间,当指定的命名空间为 init_net 的时候,与容器内进程的命名空间不一致,导致无法被 hook.</p>
 <p>正确的 hook 方法是使用 for_each_net 宏获取所有 net 后再处理,而不是固定的使用 init_net.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> net <span style="color:#f92672">*</span>net;
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">for_each_net</span> (net) {
 </span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">nf_register_net_hook</span>(net, <span style="color:#f92672">&amp;</span>reg)
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h1 id="需求">需求</h1>
+</span></span></code></pre></div><h2 id="需求">需求</h2>
 <p>主机内,只允许 TCP 控制报文(TCP报文仅有头部)向外发送,包含数据的 TCP 报文禁止外发.</p>
-<h1 id="实现">实现</h1>
+<h2 id="实现">实现</h2>
 <p>通过 netfilter 对 NF_INET_LOCAL_OUT 进行 hook, 丢弃包含数据的 TCP 报文.</p>
-<h1 id="测试">测试</h1>
+<h2 id="测试">测试</h2>
 <p>在虚拟机进行测试.有两条策略:放行 ssh; 阻断 portainer.</p>
 <p>然而配置策略后两个服务都可以正常访问.<del>与没有配置 netfilter 过滤规则效果相同,怀疑是不是从头开始就是错的</del></p>
 <p>更换环境再测试,发现表现一切正常.不过这次配置阻断的是 hugo server.</p>
 <p>初步认定实现应该是部分正确的,找到两个环境的差异即可.</p>
 <p>再次回到出现异常的环境,通过 tcpdump 抓包发现每次访问 portainer 都会有虚拟机内部之间的一次访问.</p>
 <p>恍然间意识到 portainer 是运行在 docker 中的服务.</p>
-<h1 id="解决">解决</h1>
+<h2 id="解决">解决</h2>
 <p>问题逐渐清晰, docker 通过内核命名空间实现资源隔离.</p>
 <p>盲猜 NF_INET_LOCAL_OUT 这个 hook 点可能跟命名空间有关,于是把 hook 点换成了 NF_INET_POST_ROUTING .</p>
 <p>问题解决.</p>
