@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>CC BY 4.0</copyright>
-    <lastBuildDate>Tue, 16 May 2023 20:36:11 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 24 Mar 2024 12:15:43 +0000</lastBuildDate>
     <atom:link href="https://lanthora.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在 VisionFive 2 上使用 Arch Linux 实现软路由透明代理</title>
+      <link>https://lanthora.github.io/posts/software-router-on-visionfive2-with-archlinux/</link>
+      <pubDate>Sun, 24 Mar 2024 12:15:43 +0000</pubDate>
+      <guid>https://lanthora.github.io/posts/software-router-on-visionfive2-with-archlinux/</guid>
+      <description>为什么要整这么抽象的活 以前用树莓派 4B 做软路由器.有线网口作为 WAN 口,其他设备通过 WiFi 接入.由于树莓派 WiFi 信号比较弱,所以放在了卧室.又由于卧室里没有网线,用了另一个迷你主机的无线接入客厅的无线路由器,然后用迷你主机的有线网口直连树莓派的有线网口.最近给迷你主机换了硬盘以后总是有很大的电流声,考虑到这些设备都用灯光,于是决定把这些设备都放到客厅,并想办法让 WiFi 信号可以覆盖整个房间.&#xA;最初的方案是,让树莓派的 Wan 口接光猫,原本接光猫的无线路由器作为中继.这个方案用了几天感觉还算可以,不过入户的千兆网被树莓派无线网卡的限制成了百兆.&#xA;再后来打算换成常规的有两个有线网口的软路由方案,已经在看买 R2S 还是买 R6S 了.这个时候突然发现 VisionFive2 刚好是双网口.到目前为止 OpenWRT 社区还没有支持 VisionFive 2, 考虑到以前在树莓派上的软路由就是用的 Arch Linux 系统,并且 VisionFive 2 上原本安装的也是 Arch Linux, 所以就有了标题中的想法.&#xA;在 VisionFive 2 上安装 Arch Linux 参考这个帖子完全够用.我在很久以前就安装了系统,并持续滚动更新,可能最新的安装方式已经有差异,相信手上能拿到板子的人都能装好系统.&#xA;软路由 网卡 网卡配置部分参考这篇文章.&#xA;WAN: /etc/systemd/network/end0.network&#xA;[Match] Name=end0 [Network] DHCP=yes DNSSEC=no DNS=8.8.8.8 LAN: /etc/systemd/network/end1.network&#xA;[Match] Name=end1 [Link] Multicast=yes [Network] Address=10.22.33.1/24 MulticastDNS=yes IPMasquerade=both 不要忘了配置服务开机启动&#xA;systemctl status systemd-networkd DNS 用 SmartDNS 实现国内外域名分别查询不同的 DNS 服务器.</description>
+    </item>
     <item>
       <title>介绍一款新的虚拟专用网络工具</title>
       <link>https://lanthora.github.io/posts/introducing-a-new-virtual-private-network-tool/</link>
@@ -21,7 +28,7 @@
       <link>https://lanthora.github.io/posts/hackernel-host-intrusion-detection-and-prevention-system/</link>
       <pubDate>Tue, 20 Sep 2022 22:03:16 +0800</pubDate>
       <guid>https://lanthora.github.io/posts/hackernel-host-intrusion-detection-and-prevention-system/</guid>
-      <description>引言 这篇文章介绍一款开源的的主机入侵检测与防御系统.&#xA;开源社区有类似的产品,实现方案也大体一致,他们共通的特点是过于庞大,对于我这样一个对 k8s,服务部署都不太了解的人来说,使用起来过于困难.&#xA;如果你想尝试类似的产品,同时又喜欢简单轻量的部署方式,又或者你的生产环境资源有限,导致不适合部署复杂应用,这款产品可能可以满足你的需求.&#xA;我们提供了一个演示环境,这套环境部署在树莓派 4B 的 Manjaro 上.如果演示环境挂了,请通过博客上提供的联系方式告诉我:&#xA;服务器地址: https://www.hackernel.org 用户名密码: test/123456 初衷 我的初衷是学习内核相关的技术,操作系统的安全产品是一个很好的切入点,它的下限很低同时上限很高.做出一款这样的产品可以检验我的学习成果,同时还能做出对社区有些用的东西.&#xA;名称的由来 在最初的提交中就确定项目名为 hackernel, 这是 hack 和 kernel 的组合拼写.在维基百科中对 hack 这个行为的解释有这样的描述,&amp;ldquo;问题的解决方案是不效率甚至难以理解的,但是以某种方式起作用&amp;rdquo;.&#xA;这个项目实现过程中采用一些非常规的手段对内核数据进行修改.因此 hackernel 是个契合项目的特点的名称.&#xA;核心功能实现原理 这个项目由内核模块提供核心功能,上层应用可以组合核心功能以达到不同的效果.原理上:&#xA;通过修改系统调用表,将系统调用修改为自定义的 hook 函数,根据入参决定是否调用真实的系统调用; 使用内核提供的 hook 函数, 如网络相关的 netfilter hook 点. hook 函数有能力决定是否向下层调用.允许向下调用并记录行为为检测,禁止向下调用为防御.我们通过策略来定义某个内核事件发生时的处理行为.&#xA;如果你对这部分感兴趣,可以看内核模块实现&#xA;多层封装降低使用难度 内核模块只能一条条的执行策略,而不能给自己下发策略.下发策略是上层的行为,为了降低使用难度,将上层分成了多个层次,越往上越接近最终用户,使用难度也就越低.&#xA;netlink 接口封装成函数 在这一层,我们把内核模块提供的功能封装成了 C/C++ 函数,这套封装与内核的距离最近,灵活性最强.&#xA;如果你对这部分感兴趣,可以看进程操作的封装,相同目录结构下还有文件和网络.&#xA;函数封装成 unix domain socket 服务 上一层封装与内核直接通信,在内部实现功能存在潜在风险,用 C/C++ 开发难度相对较大.因此在函数的基础上封装出服务,仅在进程内保留最核心的功能并提供 API 调用接口,其他功能在外部.这样做即隔离了进程,又允许用其他语言开发功能.&#xA;我们开发了一套事件处理机制,利用这套机制实现了纯异步的请求处理和事件通知.到此为止,所有由 C/C++ 开发的部分结束了.&#xA;如果你对这部分感兴趣,可以看封装 unix domain socket&#xA;unix domain socket 接口封装 Go 应用 经过反复考量,我们决定用 Go 实现用户直接使用的大多数需求.</description>
+      <description>引言 这篇文章介绍一款开源的的主机入侵检测与防御系统.&#xA;开源社区有类似的产品,实现方案也大体一致,他们共通的特点是过于庞大,对于我这样一个对 k8s,服务部署都不太了解的人来说,使用起来过于困难.&#xA;如果你想尝试类似的产品,同时又喜欢简单轻量的部署方式,又或者你的生产环境资源有限,导致不适合部署复杂应用,这款产品可能可以满足你的需求.&#xA;初衷 我的初衷是学习内核相关的技术,操作系统的安全产品是一个很好的切入点,它的下限很低同时上限很高.做出一款这样的产品可以检验我的学习成果,同时还能做出对社区有些用的东西.&#xA;名称的由来 在最初的提交中就确定项目名为 hackernel, 这是 hack 和 kernel 的组合拼写.在维基百科中对 hack 这个行为的解释有这样的描述,&amp;ldquo;问题的解决方案是不效率甚至难以理解的,但是以某种方式起作用&amp;rdquo;.&#xA;这个项目实现过程中采用一些非常规的手段对内核数据进行修改.因此 hackernel 是个契合项目的特点的名称.&#xA;核心功能实现原理 这个项目由内核模块提供核心功能,上层应用可以组合核心功能以达到不同的效果.原理上:&#xA;通过修改系统调用表,将系统调用修改为自定义的 hook 函数,根据入参决定是否调用真实的系统调用; 使用内核提供的 hook 函数, 如网络相关的 netfilter hook 点. hook 函数有能力决定是否向下层调用.允许向下调用并记录行为为检测,禁止向下调用为防御.我们通过策略来定义某个内核事件发生时的处理行为.&#xA;如果你对这部分感兴趣,可以看内核模块实现&#xA;多层封装降低使用难度 内核模块只能一条条的执行策略,而不能给自己下发策略.下发策略是上层的行为,为了降低使用难度,将上层分成了多个层次,越往上越接近最终用户,使用难度也就越低.&#xA;netlink 接口封装成函数 在这一层,我们把内核模块提供的功能封装成了 C/C++ 函数,这套封装与内核的距离最近,灵活性最强.&#xA;如果你对这部分感兴趣,可以看进程操作的封装,相同目录结构下还有文件和网络.&#xA;函数封装成 unix domain socket 服务 上一层封装与内核直接通信,在内部实现功能存在潜在风险,用 C/C++ 开发难度相对较大.因此在函数的基础上封装出服务,仅在进程内保留最核心的功能并提供 API 调用接口,其他功能在外部.这样做即隔离了进程,又允许用其他语言开发功能.&#xA;我们开发了一套事件处理机制,利用这套机制实现了纯异步的请求处理和事件通知.到此为止,所有由 C/C++ 开发的部分结束了.&#xA;如果你对这部分感兴趣,可以看封装 unix domain socket&#xA;unix domain socket 接口封装 Go 应用 经过反复考量,我们决定用 Go 实现用户直接使用的大多数需求.它有很多成熟的库,可以显著提高开发效率.我们实现了三个应用作为给最终用户使用的产品.&#xA;三个应用 测试程序 展示库的使用方法, 验证底层模块是否正常工作.</description>
     </item>
     <item>
       <title>我的行为准则</title>
